@@ -5,13 +5,13 @@ services:
     buildCommand: npm install
     startCommand: npm start
     envVars:
+      - key: PORT
+        value: 5001
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 10000
       - key: CORS_ORIGIN
         value: https://rean-web-3.vercel.app
       - key: DATABASE_URL
-        value: YOUR_DATABASE_URL_HERE
+        value: postgresql://clownrean_user:TM9DtL4kKN1b4MI2ljLdrPcZs4gub81B@dpg-d77ethjuibrs73bv3f40-a/clownrean
       - key: JWT_SECRET
-        value: YOUR_JWT_SECRET_HERE
+        value: 97e6de89461707d1de85386017a4626c6d315a93da2ccddfc8850dde500dd80f
