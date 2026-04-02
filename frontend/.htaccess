@@ -1,0 +1,52 @@
+# Deny access to admin/staff pages
+<Files "staff.html">
+    Order Deny,Allow
+    Deny from all
+    Allow from 127.0.0.1
+    Allow from localhost
+</Files>
+
+<Files "Admin.html">
+    Order Deny,Allow
+    Deny from all
+    Allow from 127.0.0.1
+    Allow from localhost
+</Files>
+
+<Files "Headteacher.html">
+    Order Deny,Allow
+    Deny from all
+    Allow from 127.0.0.1
+    Allow from localhost
+</Files>
+
+<Files "Headteacher-registrations.html">
+    Order Deny,Allow
+    Deny from all
+    Allow from 127.0.0.1
+    Allow from localhost
+</Files>
+
+<Files "bursar-dashboard.html">
+    Order Deny,Allow
+    Deny from all
+    Allow from 127.0.0.1
+    Allow from localhost
+</Files>
+
+<Files "teacher-dashboard.html">
+    Order Deny,Allow
+    Deny from all
+    Allow from 127.0.0.1
+    Allow from localhost
+</Files>
+
+# Prevent directory listing
+Options -Indexes
+
+# Security headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+</IfModule>

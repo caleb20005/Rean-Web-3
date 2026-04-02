@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rean Primary & Junior Secondary School - CBC Primary School</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+    <script>
+        const loggedIn = localStorage.getItem("reanLoggedIn") === "true";
+        if (!loggedIn && !window.location.pathname.endsWith("login.html")) {
+            window.location.replace("login.html");
+        }
+        
+        // Role-based access control - only admin can see staff menu
+        const ADMIN_ROLE = 'admin';
+        
+        function getUserRole() {
+            return localStorage.getItem("reanUserRole") || "student";
+        }
+        
+        function canAccessStaffMenu() {
+            return getUserRole().toLowerCase() === ADMIN_ROLE;
+        }
+        
+        function initializeNavigation() {
+            if (canAccessStaffMenu()) {
+                // Show staff menu item
+                const staffItems = document.querySelectorAll('.staff-menu-item');
+                staffItems.forEach(item => item.classList.remove('hidden'));
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', initializeNavigation);
+    </script>
+</head>
+<body class="font-body text-gray-800 overflow-x-hidden">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-3 group cursor-pointer">
+                <div class="w-12 h-12 bg-kenya-green rounded-full flex items-center justify-center text-2xl shadow-lg group-hover:scale-110 transition-transform border-2 border-kenya-red">
+                    🎓
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-2xl text-gray-800 leading-none">Rean Primary & Junior Secondary School</h1>
+                        <p class="text-sm text-kenya-green font-bold">CBC Centre of Excellence</p>
+                </div>
+            </div>
+            
+            <div class="hidden md:flex items-center gap-8">
+                <div class="relative group">
+                    <button class="font-bold text-gray-700 hover:text-kenya-green transition-colors flex items-center gap-2">
+                        <span>Home</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="absolute left-0 mt-3 w-48 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <a href="#home" class="block px-4 py-3 font-semibold text-gray-700 hover:bg-blue-50 hover:text-kenya-green rounded-t-xl">Home</a>
+                        <a href="academics.html" class="block px-4 py-3 font-semibold text-gray-700 hover:bg-blue-50 hover:text-kenya-green">Academics</a>
+                        <a href="staff.html" class="staff-menu-item hidden block px-4 py-3 font-semibold text-gray-700 hover:bg-blue-50 hover:text-kenya-green rounded-b-xl">Staff Directory</a>
+                    </div>
+                </div>
+                <a href="#cbc" class="font-bold text-gray-700 hover:text-kenya-green transition-colors">CBC Program</a>
+                <a href="#competencies" class="font-bold text-gray-700 hover:text-kenya-green transition-colors">7 Competencies</a>
+                <a href="#levels" class="font-bold text-gray-700 hover:text-kenya-green transition-colors">Grade Levels</a>
+                <a href="contact.html" class="font-bold text-gray-700 hover:text-kenya-green transition-colors">Contact</a>
+                <a href="#contact" class="bg-kenya-green text-white px-6 py-2 rounded-full font-bold hover:bg-blue-700 transition-all hover:scale-105 shadow-lg">
+                    Enroll Now
+                </a>
+                <button onclick="logout()" class="bg-slate-900 text-white px-6 py-2 rounded-full font-bold border border-white/30 hover:bg-slate-800 transition-all hover:scale-105 shadow-lg">
+                    Log Out
+                </button>
+            </div>
+
+            <button class="md:hidden text-2xl text-gray-800" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white absolute w-full shadow-xl">
+            <div class="flex flex-col p-6 gap-4">
+                <a href="#home" class="font-bold text-gray-700">Home</a>
+                <details class="group">
+                    <summary class="font-bold text-gray-700 cursor-pointer list-none flex items-center justify-between">
+                        <span>Academics</span>
+                        <i class="fas fa-chevron-down text-xs transition-transform group-open:rotate-180"></i>
+                    </summary>
+                    <div class="mt-3 flex flex-col gap-3 pl-4">
+                        <a href="academics.html" class="font-semibold text-gray-700">Academics Overview</a>
+                        <a href="Admin.html" class="font-semibold text-gray-700">Admin Dashboard</a>
+                        <a href="teacher-dashboard.html" class="font-semibold text-gray-700">Teacher Dashboard</a>
+                        <a href="Headteacher.html" class="font-semibold text-gray-700">Headteacher Dashboard</a>
+                        <a href="bursar-dashboard.html" class="font-semibold text-gray-700">Bursar Dashboard</a>
+                        <a href="staff.html" class="staff-menu-item hidden font-semibold text-gray-700">Staff Directory</a>
+                    </div>
+                </details>
+                <a href="#cbc" class="font-bold text-gray-700">CBC Program</a>
+                <a href="#competencies" class="font-bold text-gray-700">7 Competencies</a>
+                <a href="#levels" class="font-bold text-gray-700">Grade Levels</a>
+                <a href="contact.html" class="font-bold text-gray-700">Contact</a>
+                <a href="#contact" class="bg-kenya-green text-white px-6 py-2 rounded-full font-bold text-center">Enroll Now</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-kenya-green via-blue-600 to-kenya-green hero-pattern">
+        <div class="blob bg-school-yellow w-96 h-96 rounded-full top-0 left-0 animate-float"></div>
+        <div class="blob bg-kenya-red w-72 h-72 rounded-full bottom-0 right-0 animate-float" style="animation-delay: 2s;"></div>
+        <div class="blob bg-white w-64 h-64 rounded-full top-1/2 left-1/2 animate-float" style="animation-delay: 4s;"></div>
+
+        <div class="container mx-auto px-6 relative z-10 pt-20">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="text-white space-y-6">
+                    <div class="inline-block bg-kenya-red px-4 py-2 rounded-full text-sm font-bold mb-4 animate-pulse border-2 border-white">
+                        🇰🇪 Now Enrolling for 2026 Academic Year!
+                    </div>
+                    <h1 class="font-display text-5xl md:text-6xl font-bold leading-tight">
+                        Competency-Based Education for 
+                        <span class="text-school-yellow inline-block transform hover:scale-110 transition-transform cursor-pointer">Future Leaders!</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl font-semibold opacity-90 max-w-lg">
+                        Delivering the Kenyan CBC (2-6-3-3-3) curriculum with focus on the 7 core competencies, values, and practical skills.
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <button onclick="scrollToSection('contact')" class="bg-school-yellow text-gray-900 px-8 py-4 rounded-full font-bold text-lg hover:bg-yellow-300 transition-all hover:scale-105 shadow-xl flex items-center gap-2">
+                            <span>Join Us</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button onclick="scrollToSection('cbc')" class="bg-white/20 backdrop-blur-sm text-white border-2 border-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white/30 transition-all flex items-center gap-2">
+                            <i class="fas fa-book-open"></i>
+                            <span>About CBC</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-4 pt-6 text-sm font-semibold">
+                        <div class="flex -space-x-2">
+                            <div class="w-10 h-10 rounded-full bg-school-orange border-2 border-white flex items-center justify-center">📚</div>
+                            <div class="w-10 h-10 rounded-full bg-school-blue border-2 border-white flex items-center justify-center">🔬</div>
+                            <div class="w-10 h-10 rounded-full bg-school-purple border-2 border-white flex items-center justify-center">🎨</div>
+                        </div>
+                        <p>KICD Approved & KNEC Registered</p>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <div class="relative z-10 animate-float">
+                        <div class="bg-white p-4 rounded-3xl shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500 border-4 border-kenya-red">
+                            <div class="bg-gray-200 h-64 md:h-80 rounded-2xl overflow-hidden relative">
+                                <img src="assets/home-top-1.jpg" alt="School activity 1" class="hero-slide absolute inset-0 w-full h-full object-cover opacity-100 transition-opacity duration-1000">
+                                <img src="assets/home-top-2.jpg" alt="School activity 2" class="hero-slide absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+                                <img src="assets/home-top-3.jpg" alt="School activity 3" class="hero-slide absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+                                <img src="assets/home-top-4.jpg" alt="School activity 4" class="hero-slide absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+                                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-kenya-green/90 to-transparent p-4">
+                                    <p class="text-white font-bold text-sm">🎯 Practical Learning in Action</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute -top-8 -right-4 bg-white p-4 rounded-2xl shadow-xl animate-bounce z-20 border-l-4 border-kenya-green">
+                        <div class="flex items-center gap-2">
+                            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-kenya-green">
+                                <i class="fas fa-certificate"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">KICD Approved</p>
+                                <p class="font-bold text-gray-800">CBC Aligned</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute -bottom-4 -left-4 bg-white p-4 rounded-2xl shadow-xl animate-bounce z-20 border-l-4 border-kenya-red" style="animation-delay: 1.5s;">
+                        <div class="flex items-center gap-2">
+                            <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-kenya-red">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-gray-500">Ministry of Ed</p>
+                                <p class="font-bold text-gray-800">Registered</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 120L60 110C120 100 240 80 360 70C480 60 600 60 720 65C840 70 960 80 1080 85C1200 90 1320 90 1380 90L1440 90V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="white"/>
+            </svg>
+        </div>
+    </section>
+
+    <!-- CBC Structure Overview -->
+    <section id="cbc" class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <span class="inline-block bg-kenya-green text-white px-4 py-1 rounded-full text-sm font-bold mb-4">Kenya's New System</span>
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-gray-800 mb-4">The 2-6-3-3-3 Education System</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Rean Primary & Junior Secondary School implements the full Competency-Based Curriculum (CBC) structure approved by KICD, replacing the old 8-4-4 system.</p>
+            </div>
+
+            <div class="grid md:grid-cols-5 gap-4 mb-12">
+                <div class="bg-blue-50 p-6 rounded-2xl text-center border-t-4 border-kenya-green hover:shadow-lg transition-shadow">
+                    <div class="text-4xl mb-2">🍼</div>
+                    <div class="font-display text-2xl font-bold text-kenya-green">2</div>
+                    <div class="font-bold text-gray-800">Pre-Primary</div>
+                    <div class="text-sm text-gray-600 mt-2">PP1 - PP2<br>(Ages 4-5)</div>
+                </div>
+                <div class="bg-blue-50 p-6 rounded-2xl text-center border-t-4 border-school-blue hover:shadow-lg transition-shadow">
+                    <div class="text-4xl mb-2">📖</div>
+                    <div class="font-display text-2xl font-bold text-school-blue">6</div>
+                    <div class="font-bold text-gray-800">Primary</div>
+                    <div class="text-sm text-gray-600 mt-2">Grade 1-6<br>(Ages 6-11)</div>
+                </div>
+                <div class="bg-purple-50 p-6 rounded-2xl text-center border-t-4 border-school-purple hover:shadow-lg transition-shadow">
+                    <div class="text-4xl mb-2">🔬</div>
+                    <div class="font-display text-2xl font-bold text-school-purple">3</div>
+                    <div class="font-bold text-gray-800">Junior Secondary</div>
+                    <div class="text-sm text-gray-600 mt-2">Grade 7-9<br>(Ages 12-14)</div>
+                </div>
+                <div class="bg-orange-50 p-6 rounded-2xl text-center border-t-4 border-school-orange hover:shadow-lg transition-shadow">
+                    <div class="text-4xl mb-2">🎓</div>
+                    <div class="font-display text-2xl font-bold text-school-orange">3</div>
+                    <div class="font-bold text-gray-800">Senior Secondary</div>
+                    <div class="text-sm text-gray-600 mt-2">Grade 10-12<br>(Pathways)</div>
+                </div>
+                <div class="bg-yellow-50 p-6 rounded-2xl text-center border-t-4 border-school-yellow hover:shadow-lg transition-shadow">
+                    <div class="text-4xl mb-2">🏫</div>
+                    <div class="font-display text-2xl font-bold text-yellow-600">3</div>
+                    <div class="font-bold text-gray-800">University/TVET</div>
+                    <div class="text-sm text-gray-600 mt-2">Tertiary<br>Education</div>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-3xl p-8 md:p-12">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="font-display text-3xl font-bold text-gray-800 mb-6">Why CBC is Different</h3>
+                        <div class="space-y-4">
+                            <div class="flex gap-4 items-start">
+                                <div class="w-8 h-8 bg-kenya-green rounded-full flex items-center justify-center text-white font-bold shrink-0">1</div>
+                                <div>
+                                    <h4 class="font-bold text-lg">Learning Areas, Not Subjects</h4>
+                                    <p class="text-gray-600">We teach integrated learning areas with strands and sub-strands, not isolated subjects.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="w-8 h-8 bg-kenya-green rounded-full flex items-center justify-center text-white font-bold shrink-0">2</div>
+                                <div>
+                                    <h4 class="font-bold text-lg">Continuous Assessment</h4>
+                                    <p class="text-gray-600">40% School-Based Assessment (SBA) + 60% National Exams (KPSEA at Grade 6).</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="w-8 h-8 bg-kenya-green rounded-full flex items-center justify-center text-white font-bold shrink-0">3</div>
+                                <div>
+                                    <h4 class="font-bold text-lg">Learner-Centered</h4>
+                                    <p class="text-gray-600">Focus on what learners can DO, not just what they know. Practical skills over memorization.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 items-start">
+                                <div class="w-8 h-8 bg-kenya-green rounded-full flex items-center justify-center text-white font-bold shrink-0">4</div>
+                                <div>
+                                    <h4 class="font-bold text-lg">Values-Based</h4>
+                                    <p class="text-gray-600">Instilling love, responsibility, respect, unity, peace, patriotism, and integrity.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <h4 class="font-bold text-xl mb-4 text-kenya-red">CBC vs 8-4-4 Comparison</h4>
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="p-3 text-left">Feature</th>
+                                    <th class="p-3 text-left text-kenya-green">CBC</th>
+                                    <th class="p-3 text-left text-gray-500">8-4-4</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y">
+                                <tr>
+                                    <td class="p-3 font-semibold">Structure</td>
+                                    <td class="p-3 text-kenya-green">2-6-3-3-3</td>
+                                    <td class="p-3 text-gray-500">8-4-4</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold">Assessment</td>
+                                    <td class="p-3 text-kenya-green">Continuous + Exams</td>
+                                    <td class="p-3 text-gray-500">Exam-focused</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold">Focus</td>
+                                    <td class="p-3 text-kenya-green">Competencies & Skills</td>
+                                    <td class="p-3 text-gray-500">Content & Memory</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold">Completion</td>
+                                    <td class="p-3 text-kenya-green">Grade 6 (Primary)</td>
+                                    <td class="p-3 text-gray-500">Class 8 (KCPE)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7 Core Competencies -->
+    <section id="competencies" class="py-20 bg-gradient-to-b from-blue-50 to-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="inline-block bg-school-purple text-white px-4 py-1 rounded-full text-sm font-bold mb-4">KICD Framework</span>
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-gray-800 mb-4">The 7 Core Competencies</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">Every learner at Rean Primary & Junior Secondary School develops these essential competencies for the 21st century.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Communication -->
+                <div class="competency-card bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border-b-4 border-school-blue group cursor-pointer">
+                    <div class="competency-icon text-5xl mb-4 transition-transform duration-300">💬</div>
+                    <h3 class="font-display text-xl font-bold mb-2 text-gray-800">Communication & Collaboration</h3>
+                    <p class="text-gray-600 text-sm">Expressing ideas clearly in English, Kiswahili, and indigenous languages while working effectively with others.</p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Languages</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Teamwork</span>
+                    </div>
+                </div>
+
+                <!-- Critical Thinking -->
+                <div class="competency-card bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border-b-4 border-kenya-red group cursor-pointer">
+                    <div class="competency-icon text-5xl mb-4 transition-transform duration-300">🧠</div>
+                    <h3 class="font-display text-xl font-bold mb-2 text-gray-800">Critical Thinking & Problem Solving</h3>
+                    <p class="text-gray-600 text-sm">Analyzing situations logically and finding workable solutions through inquiry-based learning.</p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">Mathematics</span>
+                        <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">Science</span>
+                    </div>
+                </div>
+
+                <!-- Creativity -->
+                <div class="competency-card bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border-b-4 border-school-purple group cursor-pointer">
+                    <div class="competency-icon text-5xl mb-4 transition-transform duration-300">🎨</div>
+                    <h3 class="font-display text-xl font-bold mb-2 text-gray-800">Creativity & Imagination</h3>
+                    <p class="text-gray-600 text-sm">Generating new ideas and thinking beyond conventional limits through arts and innovation.</p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">Arts</span>
+                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">Design</span>
+                    </div>
+                </div>
+
+                <!-- Citizenship -->
+                <div class="competency-card bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border-b-4 border-kenya-green group cursor-pointer">
+                    <div class="competency-icon text-5xl mb-4 transition-transform duration-300">🇰🇪</div>
+                    <h3 class="font-display text-xl font-bold mb-2 text-gray-800">Citizenship</h3>
+                    <p class="text-gray-600 text-sm">Understanding rights, responsibilities, and community values as patriotic Kenyans.</p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Social Studies</span>
+                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">Civic Ed</span>
+                    </div>
+                </div>
+
+                <!-- Digital Literacy -->
+                <div class="competency-card bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border-b-4 border-school-orange group cursor-pointer">
+                    <div class="competency-icon text-5xl mb-4 transition-transform duration-300">💻</div>
+                    <h3 class="font-display text-xl font-bold mb-2 text-gray-800">Digital Literacy</h3>
+                    <p class="text-gray-600 text-sm">Using technology effectively and responsibly for communication and learning.</p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">ICT</span>
+                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">Coding</span>
+                    </div>
+                </div>
+
+                <!-- Learning to Learn -->
+                <div class="competency-card bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border-b-4 border-school-yellow group cursor-pointer">
+                    <div class="competency-icon text-5xl mb-4 transition-transform duration-300">📚</div>
+                    <h3 class="font-display text-xl font-bold mb-2 text-gray-800">Learning to Learn</h3>
+                    <p class="text-gray-600 text-sm">Developing self-awareness, study habits, and the ability to acquire new knowledge independently.</p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Research</span>
+                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Study Skills</span>
+                    </div>
+                </div>
+
+                <!-- Self-Efficacy -->
+                <div class="competency-card bg-white p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border-b-4 border-pink-500 md:col-span-2 lg:col-span-1 group cursor-pointer">
+                    <div class="competency-icon text-5xl mb-4 transition-transform duration-300">💪</div>
+                    <h3 class="font-display text-xl font-bold mb-2 text-gray-800">Self-Efficacy</h3>
+                    <p class="text-gray-600 text-sm">Believing in one's ability to succeed and taking personal initiative in all endeavors.</p>
+                    <div class="mt-4 flex gap-2">
+                        <span class="bg-pink-100 text-pink-800 text-xs px-2 py-1 rounded-full">Leadership</span>
+                        <span class="bg-pink-100 text-pink-800 text-xs px-2 py-1 rounded-full">Confidence</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Grade Levels Detail -->
+    <section id="levels" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <span class="inline-block bg-kenya-red text-white px-4 py-1 rounded-full text-sm font-bold mb-4">Our Programs</span>
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-gray-800">CBC Learning Areas by Level</h2>
+            </div>
+
+            <!-- Pre-Primary -->
+            <div class="mb-12 bg-yellow-50 rounded-3xl p-8 border-l-8 border-school-yellow">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-school-yellow rounded-full flex items-center justify-center text-3xl">🧸</div>
+                    <div>
+                        <h3 class="font-display text-3xl font-bold text-gray-800">Pre-Primary (PP1 - PP2)</h3>
+                        <p class="text-gray-600">Ages 4-5 | Early Years Education</p>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-5 gap-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-school-yellow mb-2">Language Activities</div>
+                        <p class="text-sm text-gray-600">Listening, speaking, pre-reading</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-school-yellow mb-2">Mathematical Activities</div>
+                        <p class="text-sm text-gray-600">Number work, sorting, patterns</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-school-yellow mb-2">Environmental Activities</div>
+                        <p class="text-sm text-gray-600">Nature, hygiene, safety</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-school-yellow mb-2">Psychomotor & Creative</div>
+                        <p class="text-sm text-gray-600">Music, art, movement, play</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-school-yellow mb-2">Religious Education</div>
+                        <p class="text-sm text-gray-600">CRE, IRE, or HRE activities</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lower Primary -->
+            <div class="mb-12 bg-blue-50 rounded-3xl p-8 border-l-8 border-school-blue">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-school-blue rounded-full flex items-center justify-center text-3xl">📚</div>
+                    <div>
+                        <h3 class="font-display text-3xl font-bold text-gray-800">Lower Primary (Grade 1-3)</h3>
+                        <p class="text-gray-600">Ages 6-8 | Early Years Education</p>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-school-blue mb-2">Literacy</div>
+                        <p class="text-sm text-gray-600">Reading, writing, phonics</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-school-blue mb-2">Kiswahili</div>
+                        <p class="text-sm text-gray-600">Lugha, kusoma, kuandika</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-school-blue mb-2">English Language</div>
+                        <p class="text-sm text-gray-600">Grammar, comprehension, composition</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-school-blue mb-2">Indigenous Language</div>
+                        <p class="text-sm text-gray-600">Mother tongue activities</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-school-blue mb-2">Mathematical Activities</div>
+                        <p class="text-sm text-gray-600">Numbers, operations, measurement</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-school-blue mb-2">Environmental Activities</div>
+                        <p class="text-sm text-gray-600">Science, social studies integration</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-school-blue mb-2">Hygiene & Nutrition</div>
+                        <p class="text-sm text-gray-600">Health, diet, sanitation</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-school-blue mb-2">Creative Arts</div>
+                        <p class="text-sm text-gray-600">Art, craft, music, drama</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm md:col-span-2 lg:col-span-1">
+                        <div class="font-bold text-school-blue mb-2">Physical & Health Ed</div>
+                        <p class="text-sm text-gray-600">PE, sports, wellbeing</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm md:col-span-2 lg:col-span-1">
+                        <div class="font-bold text-school-blue mb-2">Religious Education</div>
+                        <p class="text-sm text-gray-600">CRE, IRE, or HRE</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upper Primary -->
+            <div class="bg-blue-50 rounded-3xl p-8 border-l-8 border-kenya-green">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 bg-kenya-green rounded-full flex items-center justify-center text-3xl">🔬</div>
+                    <div>
+                        <h3 class="font-display text-3xl font-bold text-gray-800">Upper Primary (Grade 4-6)</h3>
+                        <p class="text-gray-600">Ages 9-11 | Middle School | KPSEA Preparation</p>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-kenya-green mb-2">English</div>
+                        <p class="text-sm text-gray-600">Language, literature, composition</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-kenya-green mb-2">Kiswahili</div>
+                        <p class="text-sm text-gray-600">Lugha ya Kiswahili, Fasihi</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-kenya-green mb-2">Mathematics</div>
+                        <p class="text-sm text-gray-600">Algebra, geometry, data handling</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-kenya-green mb-2">Integrated Science</div>
+                        <p class="text-sm text-gray-600">Physics, chemistry, biology basics</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-kenya-green mb-2">Social Studies</div>
+                        <p class="text-sm text-gray-600">History, geography, civics</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-kenya-green mb-2">Agriculture</div>
+                        <p class="text-sm text-gray-600">Farming, environment, nutrition</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-kenya-green mb-2">Home Science</div>
+                        <p class="text-sm text-gray-600">Cookery, needlework, home management</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-kenya-green mb-2">Creative Arts</div>
+                        <p class="text-sm text-gray-600">Visual arts, performing arts</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-kenya-green mb-2">Physical & Health Ed</div>
+                        <p class="text-sm text-gray-600">Athletics, games, health education</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm">
+                        <div class="font-bold text-kenya-green mb-2">Religious Education</div>
+                        <p class="text-sm text-gray-600">CRE, IRE, or HRE</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm md:col-span-2">
+                        <div class="font-bold text-kenya-green mb-2">Optional: Foreign Languages</div>
+                        <p class="text-sm text-gray-600">Arabic, French, German, Mandarin, KSL</p>
+                    </div>
+                </div>
+                <div class="mt-6 bg-kenya-red/10 p-4 rounded-xl border border-kenya-red/20">
+                    <p class="text-sm text-kenya-red font-semibold">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Grade 6 learners sit for the Kenya Primary School Education Assessment (KPSEA) for transition to Junior Secondary School.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Assessment & Values -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Assessment -->
+                <div class="bg-white p-8 rounded-3xl shadow-lg">
+                    <h3 class="font-display text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                        <span class="w-10 h-10 bg-school-purple rounded-full flex items-center justify-center text-white text-lg">📝</span>
+                        Assessment Methods
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4 p-4 bg-purple-50 rounded-xl">
+                            <div class="font-bold text-school-purple text-xl">40%</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">School-Based Assessment (SBA)</h4>
+                                <p class="text-sm text-gray-600">Continuous monitoring through projects, portfolios, practicals, and teacher observations.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-4 bg-purple-50 rounded-xl">
+                            <div class="font-bold text-school-purple text-xl">60%</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">National Assessments (KNEC)</h4>
+                                <p class="text-sm text-gray-600">KPSEA at Grade 6, Junior School Assessment at Grade 9, and Senior School Assessment at Grade 12.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-4 bg-gray-100 rounded-xl">
+                            <div class="font-bold text-gray-600 text-xl">📊</div>
+                            <div>
+                                <h4 class="font-bold text-gray-800">Performance Levels</h4>
+                                <p class="text-sm text-gray-600">Below Expectation, Approaching Expectation, Meeting Expectation, Exceeding Expectation.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Core Values -->
+                <div class="bg-white p-8 rounded-3xl shadow-lg">
+                    <h3 class="font-display text-2xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                        <span class="w-10 h-10 bg-kenya-red rounded-full flex items-center justify-center text-white text-lg">❤️</span>
+                        Core Values (BECF)
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="flex items-center gap-3 p-3 bg-red-50 rounded-lg">
+                            <span class="text-2xl">❤️</span>
+                            <span class="font-semibold text-gray-800">Love</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                            <span class="text-2xl">🤝</span>
+                            <span class="font-semibold text-gray-800">Responsibility</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                            <span class="text-2xl">🙏</span>
+                            <span class="font-semibold text-gray-800">Respect</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg">
+                            <span class="text-2xl">🤲</span>
+                            <span class="font-semibold text-gray-800">Unity</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
+                            <span class="text-2xl">☮️</span>
+                            <span class="font-semibold text-gray-800">Peace</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-orange-50 rounded-lg">
+                            <span class="text-2xl">🇰🇪</span>
+                            <span class="font-semibold text-gray-800">Patriotism</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-teal-50 rounded-lg col-span-2">
+                            <span class="text-2xl">⚖️</span>
+                            <span class="font-semibold text-gray-800">Integrity</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Parent Partnership -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto text-center mb-12">
+                <h2 class="font-display text-4xl font-bold text-gray-800 mb-4">Parents as Co-Educators</h2>
+                <p class="text-xl text-gray-600">Under CBC, parents play an active role in their child's education through home-based learning and community service activities.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center p-6 rounded-2xl bg-blue-50 hover:bg-blue-100 transition-colors">
+                    <div class="w-16 h-16 bg-kenya-green rounded-full flex items-center justify-center text-3xl mx-auto mb-4">🏠</div>
+                    <h3 class="font-bold text-xl mb-2">Home Learning</h3>
+                    <p class="text-gray-600">Supporting practical activities and projects at home that reinforce classroom learning.</p>
+                </div>
+                <div class="text-center p-6 rounded-2xl bg-blue-50 hover:bg-blue-100 transition-colors">
+                    <div class="w-16 h-16 bg-school-blue rounded-full flex items-center justify-center text-3xl mx-auto mb-4">📋</div>
+                    <h3 class="font-bold text-xl mb-2">Portfolio Support</h3>
+                    <p class="text-gray-600">Helping learners compile evidence of their competencies and achievements.</p>
+                </div>
+                <div class="text-center p-6 rounded-2xl bg-yellow-50 hover:bg-yellow-100 transition-colors">
+                    <div class="w-16 h-16 bg-school-yellow rounded-full flex items-center justify-center text-3xl mx-auto mb-4">🌱</div>
+                    <h3 class="font-bold text-xl mb-2">Community Service</h3>
+                    <p class="text-gray-600">Participating in community-based learning and service activities with learners.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact/Enrollment -->
+    <section id="contact" class="py-20 bg-kenya-green text-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white opacity-5 rounded-full -mr-48 -mt-48"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-kenya-red opacity-20 rounded-full -ml-32 -mb-32"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl mx-auto bg-white/10 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/20">
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div>
+                        <h2 class="font-display text-3xl md:text-4xl font-bold mb-4">Enroll at Rean Primary & Junior Secondary School</h2>
+                        <p class="text-lg mb-6 opacity-90">Join us in nurturing competent, ethical, and globally competitive Kenyan citizens.</p>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <span class="font-semibold">+254 712 345 678</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <span class="font-semibold">admissions@mwangaza.ac.ke</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <span class="font-semibold">Nairobi, Kenya</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 p-4 bg-kenya-red/30 rounded-xl border border-white/20">
+                            <p class="text-sm font-semibold">📌 Admissions ongoing for PP1 through Grade 6 for the 2026 academic year.</p>
+                        </div>
+                    </div>
+                    
+                    <form class="space-y-4" onsubmit="handleSubmit(event)">
+                        <div>
+                            <input type="text" placeholder="Parent/Guardian Name" class="w-full px-4 py-3 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-school-yellow" required>
+                        </div>
+                        <div>
+                            <input type="tel" placeholder="Phone Number" class="w-full px-4 py-3 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-school-yellow" required>
+                        </div>
+                        <div>
+                            <select class="w-full px-4 py-3 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-school-yellow">
+                                <option>Select Grade Level...</option>
+                                <option>Pre-Primary 1 (PP1)</option>
+                                <option>Pre-Primary 2 (PP2)</option>
+                                <option>Grade 1</option>
+                                <option>Grade 2</option>
+                                <option>Grade 3</option>
+                                <option>Grade 4</option>
+                                <option>Grade 5</option>
+                                <option>Grade 6</option>
+                            </select>
+                        </div>
+                        <div>
+                            <textarea placeholder="Message (Optional)" rows="3" class="w-full px-4 py-3 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-school-yellow"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-school-yellow text-gray-900 py-3 rounded-xl font-bold hover:bg-yellow-300 transition-colors flex items-center justify-center gap-2">
+                            <span>Request Admission Info</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-10 h-10 bg-kenya-green rounded-full flex items-center justify-center text-xl border border-kenya-red">🎓</div>
+                        <span class="font-display font-bold text-xl">Rean Primary & Junior Secondary School</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">KICD-approved CBC Centre of Excellence nurturing competent, ethical, and globally competitive Kenyan citizens.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-school-yellow transition-colors">About CBC</a></li>
+                        <li><a href="#" class="hover:text-school-yellow transition-colors">Grade Levels</a></li>
+                        <li><a href="#" class="hover:text-school-yellow transition-colors">Admissions</a></li>
+                        <li><a href="#" class="hover:text-school-yellow transition-colors">Calendar</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-school-yellow transition-colors">KICD Portal</a></li>
+                        <li><a href="#" class="hover:text-school-yellow transition-colors">KNEC Updates</a></li>
+                        <li><a href="#" class="hover:text-school-yellow transition-colors">Parent Portal</a></li>
+                        <li><a href="#" class="hover:text-school-yellow transition-colors">Fee Structure</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold mb-4">Connect</h4>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-kenya-green transition-colors"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-kenya-green transition-colors"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center hover:bg-kenya-green transition-colors"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+                <p>&copy; 2026 Rean Primary & Junior Secondary School. All rights reserved. | Ministry of Education Registered | KICD Approved</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function logout() {
+            localStorage.removeItem("reanLoggedIn");
+            localStorage.removeItem("reanUserRole");
+            window.location.replace("login.html");
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
+
+

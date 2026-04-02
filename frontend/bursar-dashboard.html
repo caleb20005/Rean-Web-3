@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bursar Dashboard - Financial Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: #f1f5f9;
+        }
+        .mono { font-family: 'DM Mono', monospace; }
+        
+        .sidebar-emerald {
+            background: linear-gradient(180deg, #064e3b 0%, #065f46 100%);
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.08);
+        }
+        
+        .currency-positive { color: #059669; }
+        .currency-negative { color: #dc2626; }
+        .currency-neutral { color: #64748b; }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-paid { background: #d1fae5; color: #065f46; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-overdue { background: #fee2e2; color: #991b1b; }
+        .status-draft { background: #e0e7ff; color: #3730a3; }
+        
+        .transaction-row {
+            transition: all 0.2s;
+        }
+        .transaction-row:hover {
+            background: #f8fafc;
+            transform: scale(1.005);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 3px;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+        }
+        .progress-bar-warning {
+            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+        }
+        .progress-bar-danger {
+            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .logoutButton {
+            position: relative;
+            width: 100%;
+            height: 48px;
+            border: 1px solid rgba(148, 163, 184, 0.45);
+            border-radius: 12px;
+            background: linear-gradient(90deg, #f8fafc 0 62%, #1e293b 62% 100%);
+            color: #0f172a;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .logoutButton:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px -12px rgba(15, 23, 42, 0.8);
+        }
+        .logoutButton .button-text {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+        .logoutButton .figure {
+            position: absolute;
+            right: calc(38% - 14px);
+            top: 50%;
+            transform: translateY(-50%);
+            color: #38bdf8;
+            font-size: 1rem;
+            z-index: 3;
+        }
+        .logoutButton .door-panel {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 38%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logoutButton .door-icon {
+            width: 26px;
+            height: 26px;
+        }
+        .logoutButton .doorway {
+            fill: #334155;
+        }
+        .logoutButton .door {
+            fill: #3b82f6;
+            transform-box: fill-box;
+            transform-origin: left center;
+        }
+        .logoutButton .knob {
+            fill: #bfdbfe;
+        }
+        .logoutButton.is-animating {
+            pointer-events: none;
+        }
+        .logoutButton.is-animating .button-text {
+            opacity: 0.75;
+            transform: translate(-4px, -50%);
+        }
+        .logoutButton.is-animating .figure {
+            animation: logoutWalk 900ms cubic-bezier(0.7, 0.1, 0.9, 1) forwards;
+        }
+        .logoutButton.is-animating .door {
+            animation: logoutDoor 900ms ease-in-out forwards;
+        }
+        @keyframes logoutWalk {
+            0% {
+                transform: translateY(-50%) translateX(0);
+                opacity: 1;
+            }
+            70% {
+                transform: translateY(-50%) translateX(34px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50%) translateX(52px);
+                opacity: 0;
+            }
+        }
+        @keyframes logoutDoor {
+            0%, 100% {
+                transform: rotateY(0deg);
+            }
+            30%, 75% {
+                transform: rotateY(-34deg);
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800 overflow-hidden">
+
+    <div class="flex h-screen">
+        <!-- Bursar Sidebar -->
+        <aside class="sidebar-emerald w-80 text-emerald-100 flex flex-col shadow-2xl relative z-20">
+            <div class="p-8 border-b border-emerald-800/50">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-emerald-500/20 rounded-xl flex items-center justify-center border border-emerald-400/30">
+                        <i class="fas fa-coins text-emerald-300 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-white tracking-tight">Rean Finance</h1>
+                        <p class="text-xs text-emerald-400/80 uppercase tracking-widest">Bursar Portal</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <div class="bg-emerald-800/30 rounded-xl p-4 border border-emerald-700/50">
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <img src="https://i.pravatar.cc/150?img=60" class="w-12 h-12 rounded-full border-2 border-emerald-400/50" alt="Bursar">
+                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 rounded-full border-2 border-emerald-900"></span>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-white text-sm">Margaret Chen</p>
+                            <p class="text-xs text-emerald-400">School Bursar</p>
+                            <p class="text-xs text-emerald-300/70 mt-1">FCA, CIPFA</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
+                <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-3 px-4">Financial Operations</div>
+                
+                <a href="#" class="flex items-center gap-4 px-4 py-3 bg-emerald-500/10 text-emerald-300 border-r-2 border-emerald-400 rounded-l-xl transition-all">
+                    <i class="fas fa-chart-line w-5"></i>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-emerald-800/30 text-emerald-400 hover:text-emerald-200 rounded-xl transition-all group">
+                    <i class="fas fa-file-invoice-dollar w-5 group-hover:text-emerald-300 transition-colors"></i>
+                    <span class="font-medium">Fee Collection</span>
+                    <span class="ml-auto bg-emerald-700 text-xs px-2 py-1 rounded-full text-emerald-200">KES 48K</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-emerald-800/30 text-emerald-400 hover:text-emerald-200 rounded-xl transition-all group">
+                    <i class="fas fa-money-check-alt w-5 group-hover:text-emerald-300 transition-colors"></i>
+                    <span class="font-medium">Payroll</span>
+                    <span class="ml-auto bg-red-500/20 text-red-300 text-xs px-2 py-1 rounded-full">Due</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-emerald-800/30 text-emerald-400 hover:text-emerald-200 rounded-xl transition-all group">
+                    <i class="fas fa-shopping-cart w-5 group-hover:text-emerald-300 transition-colors"></i>
+                    <span class="font-medium">Procurement</span>
+                    <span class="ml-auto bg-amber-500/20 text-amber-300 text-xs px-2 py-1 rounded-full">3</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-emerald-800/30 text-emerald-400 hover:text-emerald-200 rounded-xl transition-all group">
+                    <i class="fas fa-university w-5 group-hover:text-emerald-300 transition-colors"></i>
+                    <span class="font-medium">Banking</span>
+                </a>
+
+                <div class="text-xs font-bold text-emerald-600 uppercase tracking-wider mt-8 mb-3 px-4">Management</div>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-emerald-800/30 text-emerald-400 hover:text-emerald-200 rounded-xl transition-all group">
+                    <i class="fas fa-budget w-5 group-hover:text-emerald-300 transition-colors"></i>
+                    <span class="font-medium">Budgeting</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-emerald-800/30 text-emerald-400 hover:text-emerald-200 rounded-xl transition-all group">
+                    <i class="fas fa-file-contract w-5 group-hover:text-emerald-300 transition-colors"></i>
+                    <span class="font-medium">Contracts</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-emerald-800/30 text-emerald-400 hover:text-emerald-200 rounded-xl transition-all group">
+                    <i class="fas fa-calculator w-5 group-hover:text-emerald-300 transition-colors"></i>
+                    <span class="font-medium">Audit & Compliance</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-emerald-800/30 text-emerald-400 hover:text-emerald-200 rounded-xl transition-all group">
+                    <i class="fas fa-chart-bar w-5 group-hover:text-emerald-300 transition-colors"></i>
+                    <span class="font-medium">Reports</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-emerald-800/50 space-y-2">
+                <div class="bg-emerald-800/30 rounded-lg p-3 border border-emerald-700/30">
+                    <p class="text-xs text-emerald-400 mb-1">Fiscal Year End</p>
+                    <p class="text-lg font-bold text-white mono">Aug 31, 2026</p>
+                    <p class="text-xs text-emerald-500 mt-1">175 days remaining</p>
+                </div>
+                <button class="w-full py-3 bg-emerald-700 hover:bg-emerald-600 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2 text-emerald-100">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </button>
+                <button id="logoutBtn" class="logoutButton" type="button" aria-label="Log Out">
+                    <span class="button-text">Log Out</span>
+                    <span class="figure" aria-hidden="true"><i class="fas fa-person-walking"></i></span>
+                    <span class="door-panel" aria-hidden="true">
+                        <svg class="door-icon" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                            <rect class="doorway" x="4" y="4" width="24" height="32" rx="2"></rect>
+                            <rect class="door" x="7" y="7" width="18" height="26" rx="2"></rect>
+                            <circle class="knob" cx="21" cy="20" r="1.3"></circle>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50">
+            <!-- Header -->
+            <header class="glass-panel sticky top-0 z-10 px-8 py-5 flex justify-between items-center border-b border-slate-200">
+                <div class="flex items-center gap-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800">Financial Dashboard</h2>
+                        <p class="text-sm text-slate-500">FY 2025-2026 • Term 2 • Week 24</p>
+                    </div>
+                    <div class="h-8 w-px bg-slate-300 hidden md:block"></div>
+                    <div class="hidden md:flex items-center gap-3">
+                        <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-semibold">
+                            <i class="fas fa-check-circle mr-1"></i>Books Balanced
+                        </span>
+                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
+                            <i class="fas fa-university mr-1"></i>3 Accounts Linked
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative hidden lg:block">
+                        <input type="text" placeholder="Search transactions, invoices..." 
+                               class="pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-full w-80 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm text-sm">
+                        <i class="fas fa-search absolute left-3.5 top-3 text-slate-400"></i>
+                    </div>
+
+                    <button class="relative p-2.5 text-slate-600 hover:text-emerald-600 transition-colors bg-white rounded-full shadow-sm border border-slate-200">
+                        <i class="fas fa-bell text-lg"></i>
+                        <span class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center border-2 border-white font-bold">4</span>
+                    </button>
+
+                    <button class="hidden md:flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-full text-sm font-medium transition-colors shadow-lg">
+                        <i class="fas fa-plus"></i>
+                        New Transaction
+                    </button>
+                </div>
+            </header>
+
+            <div class="p-8 space-y-8">
+                <!-- Cash Position & Key Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 animate-fade-in">
+                    <div class="metric-card rounded-2xl p-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full -mr-16 -mt-16 opacity-60"></div>
+                        <div class="relative">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-3 bg-emerald-100 rounded-xl text-emerald-700">
+                                    <i class="fas fa-wallet text-xl"></i>
+                                </div>
+                                <span class="text-emerald-600 text-xs font-bold bg-emerald-50 px-2 py-1 rounded-full flex items-center gap-1">
+                                    <i class="fas fa-arrow-up"></i> 12.5%
+                                </span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-slate-800 mono">KES 284,650</h3>
+                            <p class="text-slate-500 text-sm font-medium">Current Cash Position</p>
+                            <div class="mt-4 flex items-center gap-2 text-xs text-slate-400">
+                                <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                                <span>Last updated: 10:45 AM</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card rounded-2xl p-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-full -mr-16 -mt-16 opacity-60"></div>
+                        <div class="relative">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-3 bg-amber-100 rounded-xl text-amber-700">
+                                    <i class="fas fa-hourglass-half text-xl"></i>
+                                </div>
+                                <span class="text-amber-600 text-xs font-bold bg-amber-50 px-2 py-1 rounded-full">
+                                    23 pending
+                                </span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-slate-800 mono">KES 48,250</h3>
+                            <p class="text-slate-500 text-sm font-medium">Outstanding Fees</p>
+                            <div class="mt-4 w-full bg-slate-100 rounded-full h-2">
+                                <div class="progress-bar-warning h-2 rounded-full" style="width: 65%"></div>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">65% collection rate</p>
+                        </div>
+                    </div>
+
+                    <div class="metric-card rounded-2xl p-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-full -mr-16 -mt-16 opacity-60"></div>
+                        <div class="relative">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-3 bg-red-100 rounded-xl text-red-700">
+                                    <i class="fas fa-file-invoice text-xl"></i>
+                                </div>
+                                <span class="text-red-600 text-xs font-bold bg-red-50 px-2 py-1 rounded-full">
+                                    8 overdue
+                                </span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-slate-800 mono">KES 12,840</h3>
+                            <p class="text-slate-500 text-sm font-medium">Overdue Payments</p>
+                            <div class="mt-4 flex items-center gap-2">
+                                <button class="text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full hover:bg-red-200 transition-colors">
+                                    Send Reminders
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card rounded-2xl p-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-16 -mt-16 opacity-60"></div>
+                        <div class="relative">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-3 bg-blue-100 rounded-xl text-blue-700">
+                                    <i class="fas fa-calendar-day text-xl"></i>
+                                </div>
+                                <span class="text-blue-600 text-xs font-bold bg-blue-50 px-2 py-1 rounded-full">
+                                    Due Today
+                                </span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-slate-800 mono">KES 34,500</h3>
+                            <p class="text-slate-500 text-sm font-medium">Payroll Run</p>
+                            <div class="mt-4 flex items-center gap-2">
+                                <button class="text-xs bg-blue-600 text-white px-3 py-1 rounded-full hover:bg-blue-700 transition-colors">
+                                    Process Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Financial Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
+                    <!-- Cash Flow Chart -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800">Cash Flow Analysis</h3>
+                                <p class="text-sm text-slate-500">Monthly inflows vs outflows (FY 2025-2026)</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="px-3 py-1.5 bg-slate-800 text-white rounded-lg text-xs font-medium">Monthly</button>
+                                <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-medium transition-colors">Quarterly</button>
+                                <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-medium transition-colors">YTD</button>
+                            </div>
+                        </div>
+                        <canvas id="cashFlowChart" height="120"></canvas>
+                    </div>
+
+                    <!-- Budget Utilization -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <h3 class="text-lg font-bold text-slate-800 mb-1">Budget Utilization</h3>
+                        <p class="text-sm text-slate-500 mb-6">By cost centre (YTD)</p>
+                        
+                        <div class="space-y-5">
+                            <div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-slate-600 font-medium">Staff Costs</span>
+                                    <span class="text-slate-800 font-bold mono">KES 892K / KES 1.1M</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-3">
+                                    <div class="progress-bar h-3 rounded-full" style="width: 81%"></div>
+                                </div>
+                                <p class="text-xs text-slate-400 mt-1">81% utilized • On track</p>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-slate-600 font-medium">Operations</span>
+                                    <span class="text-slate-800 font-bold mono">KES 156K / KES 220K</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-3">
+                                    <div class="progress-bar h-3 rounded-full" style="width: 71%"></div>
+                                </div>
+                                <p class="text-xs text-slate-400 mt-1">71% utilized • Under budget</p>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-slate-600 font-medium">Capital Projects</span>
+                                    <span class="text-slate-800 font-bold mono">KES 89K / KES 150K</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-3">
+                                    <div class="progress-bar-warning h-3 rounded-full" style="width: 59%"></div>
+                                </div>
+                                <p class="text-xs text-amber-600 mt-1">59% utilized • Delayed</p>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-slate-600 font-medium">Learning Resources</span>
+                                    <span class="text-slate-800 font-bold mono">KES 45K / KES 48K</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-3">
+                                    <div class="progress-bar-danger h-3 rounded-full" style="width: 94%"></div>
+                                </div>
+                                <p class="text-xs text-red-600 mt-1">94% utilized • Near limit</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-4 border-t border-slate-100">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-slate-600">Total Budget</span>
+                                <span class="text-lg font-bold text-slate-800 mono">KES 1.52M</span>
+                            </div>
+                            <div class="flex justify-between items-center mt-2">
+                                <span class="text-sm text-slate-600">Remaining</span>
+                                <span class="text-lg font-bold text-emerald-600 mono">KES 398K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fee Collection & Outstanding -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in">
+                    <!-- Fee Collection Status -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800">Fee Collection Status</h3>
+                                <p class="text-sm text-slate-500">Spring Term 2026</p>
+                            </div>
+                            <button class="text-emerald-600 hover:text-emerald-700 text-sm font-medium">View All</button>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-4 mb-6">
+                            <div class="text-center p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                                <p class="text-2xl font-bold text-emerald-700 mono">184</p>
+                                <p class="text-xs text-emerald-600 font-medium mt-1">Paid in Full</p>
+                            </div>
+                            <div class="text-center p-4 bg-amber-50 rounded-xl border border-amber-100">
+                                <p class="text-2xl font-bold text-amber-700 mono">23</p>
+                                <p class="text-xs text-amber-600 font-medium mt-1">Partial</p>
+                            </div>
+                            <div class="text-center p-4 bg-red-50 rounded-xl border border-red-100">
+                                <p class="text-2xl font-bold text-red-700 mono">8</p>
+                                <p class="text-xs text-red-600 font-medium mt-1">Overdue</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-sm text-slate-800">Term Fees - Spring 2026</p>
+                                        <p class="text-xs text-slate-500">Due: Jan 5, 2026</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-slate-800 mono">KES 92,000</p>
+                                    <span class="status-badge status-paid"><i class="fas fa-check-circle"></i> 94%</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-700">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-sm text-slate-800">Lunch Fees - March</p>
+                                        <p class="text-xs text-slate-500">Due: Mar 1, 2026</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-slate-800 mono">KES 8,450</p>
+                                    <span class="status-badge status-pending"><i class="fas fa-clock"></i> 78%</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-700">
+                                        <i class="fas fa-exclamation"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-sm text-slate-800">After-School Clubs</p>
+                                        <p class="text-xs text-slate-500">Due: Feb 15, 2026</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-bold text-slate-800 mono">KES 3,200</p>
+                                    <span class="status-badge status-overdue"><i class="fas fa-exclamation-circle"></i> 45%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Outstanding Debtors -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800">Outstanding Debtors</h3>
+                                <p class="text-sm text-slate-500">Requires immediate attention</p>
+                            </div>
+                            <button class="text-sm bg-slate-800 text-white px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors">
+                                Export List
+                            </button>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="transaction-row flex items-center justify-between p-4 border border-slate-200 rounded-xl">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold">
+                                        WS
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-800">Wilson Family</p>
+                                        <p class="text-xs text-slate-500">Student: Emma Wilson (Y5)</p>
+                                        <p class="text-xs text-red-600 font-medium mt-1">45 days overdue</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xl font-bold text-red-600 mono">KES 2,450</p>
+                                    <div class="flex gap-2 mt-2">
+                                        <button class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-full transition-colors">Email</button>
+                                        <button class="text-xs bg-red-100 hover:bg-red-200 text-red-700 px-3 py-1 rounded-full transition-colors">Escalate</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="transaction-row flex items-center justify-between p-4 border border-slate-200 rounded-xl">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold">
+                                        TB
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-800">Thompson Family</p>
+                                        <p class="text-xs text-slate-500">Student: James Thompson (Y3)</p>
+                                        <p class="text-xs text-red-600 font-medium mt-1">32 days overdue</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xl font-bold text-red-600 mono">KES 1,890</p>
+                                    <div class="flex gap-2 mt-2">
+                                        <button class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-full transition-colors">Email</button>
+                                        <button class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-700 px-3 py-1 rounded-full transition-colors">Payment Plan</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="transaction-row flex items-center justify-between p-4 border border-slate-200 rounded-xl">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold">
+                                        GB
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-800">Garcia-Brown Family</p>
+                                        <p class="text-xs text-slate-500">Student: Sofia Garcia (Y4)</p>
+                                        <p class="text-xs text-amber-600 font-medium mt-1">18 days overdue</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xl font-bold text-amber-600 mono">KES 1,200</p>
+                                    <div class="flex gap-2 mt-2">
+                                        <button class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1 rounded-full transition-colors">Email</button>
+                                        <button class="text-xs bg-emerald-100 hover:bg-emerald-200 text-emerald-700 px-3 py-1 rounded-full transition-colors">Promise to Pay</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="transaction-row flex items-center justify-between p-4 border border-slate-200 rounded-xl opacity-60">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold">
+                                        CL
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-800">Clarke Family</p>
+                                        <p class="text-xs text-slate-500">Student: Oliver Clarke (Y2)</p>
+                                        <p class="text-xs text-slate-500 font-medium mt-1">Payment plan active</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xl font-bold text-slate-600 mono">KES 800</p>
+                                    <span class="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full">Plan: KES 200/mo</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payroll & Procurement -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
+                    <!-- Payroll Summary -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800">Payroll Summary</h3>
+                                <p class="text-sm text-slate-500">March 2026 Run</p>
+                            </div>
+                            <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-bold">DUE TODAY</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                <span class="text-sm text-slate-600">Teaching Staff</span>
+                                <span class="font-bold text-slate-800 mono">KES 24,500</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                <span class="text-sm text-slate-600">Support Staff</span>
+                                <span class="font-bold text-slate-800 mono">KES 8,200</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                                <span class="text-sm text-slate-600">Administration</span>
+                                <span class="font-bold text-slate-800 mono">KES 1,800</span>
+                            </div>
+                            <div class="border-t border-slate-200 pt-3">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm text-slate-600">Gross Total</span>
+                                    <span class="font-bold text-slate-800 mono">KES 34,500</span>
+                                </div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm text-slate-600">Employer NI</span>
+                                    <span class="font-bold text-slate-800 mono">KES 3,450</span>
+                                </div>
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm text-slate-600">Pension Contrib.</span>
+                                    <span class="font-bold text-slate-800 mono">KES 2,760</span>
+                                </div>
+                                <div class="flex justify-between items-center pt-3 border-t border-slate-200">
+                                    <span class="font-semibold text-slate-800">Total Cost</span>
+                                    <span class="text-xl font-bold text-slate-800 mono">KES 40,710</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium transition-colors shadow-lg shadow-emerald-200">
+                            Process Payroll Run
+                        </button>
+                    </div>
+
+                    <!-- Recent Transactions -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800">Recent Transactions</h3>
+                                <p class="text-sm text-slate-500">Last 30 days</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">All</button>
+                                <button class="px-3 py-1.5 text-sm font-medium text-emerald-600 bg-emerald-50 rounded-lg">Income</button>
+                                <button class="px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">Expense</button>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="text-xs text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                                    <tr>
+                                        <th class="text-left py-3 font-medium">Date</th>
+                                        <th class="text-left py-3 font-medium">Description</th>
+                                        <th class="text-left py-3 font-medium">Category</th>
+                                        <th class="text-right py-3 font-medium">Amount</th>
+                                        <th class="text-center py-3 font-medium">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-sm">
+                                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                                        <td class="py-4 text-slate-600 mono">Mar 9</td>
+                                        <td class="py-4">
+                                            <p class="font-medium text-slate-800">Fee Payment - Wilson Family</p>
+                                            <p class="text-xs text-slate-500">Ref: FP-2026-0892</p>
+                                        </td>
+                                        <td class="py-4"><span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs">Tuition</span></td>
+                                        <td class="py-4 text-right font-bold text-emerald-600 mono">+KES 2,450</td>
+                                        <td class="py-4 text-center"><span class="status-badge status-paid">Cleared</span></td>
+                                    </tr>
+                                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                                        <td class="py-4 text-slate-600 mono">Mar 8</td>
+                                        <td class="py-4">
+                                            <p class="font-medium text-slate-800">Supplier Invoice - Office Depot</p>
+                                            <p class="text-xs text-slate-500">Stationery supplies Q1</p>
+                                        </td>
+                                        <td class="py-4"><span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">Supplies</span></td>
+                                        <td class="py-4 text-right font-bold text-red-600 mono">-KES 1,240</td>
+                                        <td class="py-4 text-center"><span class="status-badge status-paid">Paid</span></td>
+                                    </tr>
+                                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                                        <td class="py-4 text-slate-600 mono">Mar 8</td>
+                                        <td class="py-4">
+                                            <p class="font-medium text-slate-800">Lunch Fees Collection</p>
+                                            <p class="text-xs text-slate-500">Weekly batch deposit</p>
+                                        </td>
+                                        <td class="py-4"><span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-xs">Ancillary</span></td>
+                                        <td class="py-4 text-right font-bold text-emerald-600 mono">+KES 3,680</td>
+                                        <td class="py-4 text-center"><span class="status-badge status-paid">Cleared</span></td>
+                                    </tr>
+                                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                                        <td class="py-4 text-slate-600 mono">Mar 7</td>
+                                        <td class="py-4">
+                                            <p class="font-medium text-slate-800">Utility Bill - Electricity</p>
+                                            <p class="text-xs text-slate-500">Feb 2026 consumption</p>
+                                        </td>
+                                        <td class="py-4"><span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs">Utilities</span></td>
+                                        <td class="py-4 text-right font-bold text-red-600 mono">-KES 2,850</td>
+                                        <td class="py-4 text-center"><span class="status-badge status-pending">Pending</span></td>
+                                    </tr>
+                                    <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                                        <td class="py-4 text-slate-600 mono">Mar 6</td>
+                                        <td class="py-4">
+                                            <p class="font-medium text-slate-800">IT Equipment Purchase</p>
+                                            <p class="text-xs text-slate-500">Laptops for staff (5 units)</p>
+                                        </td>
+                                        <td class="py-4"><span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded text-xs">Capital</span></td>
+                                        <td class="py-4 text-right font-bold text-red-600 mono">-KES 4,500</td>
+                                        <td class="py-4 text-center"><span class="status-badge status-paid">Paid</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-4 flex justify-between items-center">
+                            <p class="text-sm text-slate-500">Showing 5 of 47 transactions</p>
+                            <button class="text-emerald-600 hover:text-emerald-700 text-sm font-medium">View All Transactions</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Purchase Orders & Approvals -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in">
+                    <!-- Pending Approvals -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800">Pending Approvals</h3>
+                                <p class="text-sm text-slate-500">Purchase orders awaiting authorization</p>
+                            </div>
+                            <span class="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded-full font-bold">3 Pending</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="p-4 border-2 border-amber-200 rounded-xl bg-amber-50/50">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <p class="font-bold text-slate-800">PO-2026-0042</p>
+                                        <p class="text-sm text-slate-600">Science Lab Equipment</p>
+                                        <p class="text-xs text-slate-500 mt-1">Requested by: M. Chen (Science Lead)</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-slate-800 mono">KES 3,240</span>
+                                </div>
+                                <div class="flex items-center gap-2 mb-3">
+                                    <span class="text-xs bg-white border border-amber-200 text-amber-700 px-2 py-1 rounded">Capital</span>
+                                    <span class="text-xs bg-white border border-amber-200 text-amber-700 px-2 py-1 rounded">Science Dept</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-sm font-medium transition-colors">
+                                        <i class="fas fa-check mr-1"></i>Approve
+                                    </button>
+                                    <button class="flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 py-2 rounded-lg text-sm font-medium transition-colors">
+                                        <i class="fas fa-times mr-1"></i>Reject
+                                    </button>
+                                    <button class="px-3 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg transition-colors">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="p-4 border border-slate-200 rounded-xl">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <p class="font-bold text-slate-800">PO-2026-0041</p>
+                                        <p class="text-sm text-slate-600">Library Books - New Arrivals</p>
+                                        <p class="text-xs text-slate-500 mt-1">Requested by: J. Smith (Librarian)</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-slate-800 mono">KES 890</span>
+                                </div>
+                                <div class="flex items-center gap-2 mb-3">
+                                    <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">Revenue</span>
+                                    <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">Library</span>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-sm font-medium transition-colors">
+                                        <i class="fas fa-check mr-1"></i>Approve
+                                    </button>
+                                    <button class="flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 py-2 rounded-lg text-sm font-medium transition-colors">
+                                        <i class="fas fa-times mr-1"></i>Reject
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="p-4 border border-slate-200 rounded-xl opacity-75">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div>
+                                        <p class="font-bold text-slate-800">PO-2026-0040</p>
+                                        <p class="text-sm text-slate-600">Catering Supplies - March</p>
+                                        <p class="text-xs text-slate-500 mt-1">Requested by: Kitchen Manager</p>
+                                    </div>
+                                    <span class="text-xl font-bold text-slate-800 mono">KES 1,450</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">Operational</span>
+                                    <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded">Within Budget</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bank Reconciliation -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800">Bank Reconciliation</h3>
+                                <p class="text-sm text-slate-500">Account: ****4521 • NatWest</p>
+                            </div>
+                            <span class="bg-emerald-100 text-emerald-700 text-xs px-3 py-1 rounded-full font-bold flex items-center gap-1">
+                                <i class="fas fa-check-circle"></i> Reconciled
+                            </span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700">
+                                        <i class="fas fa-university text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-800">Current Account</p>
+                                        <p class="text-xs text-slate-500">****4521</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xl font-bold text-slate-800 mono">KES 184,250</p>
+                                    <p class="text-xs text-emerald-600">Last reconciled: Today</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700">
+                                        <i class="fas fa-piggy-bank text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-800">Savings Account</p>
+                                        <p class="text-xs text-slate-500">****7893</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xl font-bold text-slate-800 mono">KES 95,400</p>
+                                    <p class="text-xs text-slate-500">Reserve fund</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-amber-700">
+                                        <i class="fas fa-money-bill-wave text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-800">Petty Cash</p>
+                                        <p class="text-xs text-slate-500">Physical float</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xl font-bold text-slate-800 mono">KES 5,000</p>
+                                    <p class="text-xs text-slate-500">KES 347 unaccounted</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-6 border-t border-slate-200">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-sm font-medium text-slate-600">Unreconciled Items</span>
+                                <span class="text-sm font-bold text-slate-800">3 transactions</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center text-sm p-2 bg-amber-50 rounded-lg border border-amber-100">
+                                    <span class="text-slate-700">Mar 8 - Transfer to Savings</span>
+                                    <span class="font-bold text-amber-700 mono">KES 5,000</span>
+                                </div>
+                                <div class="flex justify-between items-center text-sm p-2 bg-amber-50 rounded-lg border border-amber-100">
+                                    <span class="text-slate-700">Mar 7 - Direct Debit - Utilities</span>
+                                    <span class="font-bold text-amber-700 mono">KES 2,850</span>
+                                </div>
+                            </div>
+                            <button class="w-full mt-4 bg-slate-800 hover:bg-slate-700 text-white py-2.5 rounded-xl text-sm font-medium transition-colors">
+                                Reconcile Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Metrics -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-slate-200 animate-fade-in">
+                    <div class="text-center">
+                        <p class="text-3xl font-bold text-slate-800 mono">KES 1.52M</p>
+                        <p class="text-sm text-slate-500">Annual Budget</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-3xl font-bold text-slate-800 mono">KES 284K</p>
+                        <p class="text-sm text-slate-500">Current Assets</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-3xl font-bold text-slate-800 mono">KES 12K</p>
+                        <p class="text-sm text-slate-500">Bad Debt Provision</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-3xl font-bold text-slate-800 mono">94%</p>
+                        <p class="text-sm text-slate-500">Collection Rate</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Set current date
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', options);
+
+        // Cash Flow Chart
+        const cashFlowCtx = document.getElementById('cashFlowChart').getContext('2d');
+        new Chart(cashFlowCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+                datasets: [{
+                    label: 'Income',
+                    data: [145000, 142000, 138000, 185000, 148000, 152000, 156000],
+                    backgroundColor: '#10b981',
+                    borderRadius: 4,
+                }, {
+                    label: 'Expenditure',
+                    data: [132000, 128000, 135000, 165000, 138000, 142000, 145000],
+                    backgroundColor: '#ef4444',
+                    borderRadius: 4,
+                }, {
+                    label: 'Net Cash Flow',
+                    data: [13000, 14000, 3000, 20000, 10000, 10000, 11000],
+                    type: 'line',
+                    borderColor: '#0f172a',
+                    backgroundColor: 'rgba(15, 23, 42, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#0f172a',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: { family: 'Inter', size: 11 }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#f1f5f9' },
+                        ticks: { 
+                            font: { family: 'DM Mono', size: 10 },
+                            callback: function(value) {
+                                return 'KES ' + (value/1000) + 'K';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: 'Inter' } }
+                    }
+                }
+            }
+        });
+
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function () {
+                if (logoutBtn.classList.contains('is-animating')) return;
+                logoutBtn.classList.add('is-animating');
+                setTimeout(() => {
+                    logoutBtn.classList.remove('is-animating');
+                    window.location.href = 'academics.html';
+                }, 950);
+            });
+        }
+    </script>
+</body>
+</html>
+

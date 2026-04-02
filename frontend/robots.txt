@@ -1,0 +1,12 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /staff/
+Disallow: /headteacher/
+Disallow: /bursar/
+Disallow: /teacher/
+Disallow: /Admin.html
+Disallow: /staff.html
+Disallow: /Headteacher.html
+Disallow: /Headteacher-registrations.html
+Disallow: /bursar-dashboard.html
+Disallow: /teacher-dashboard.html

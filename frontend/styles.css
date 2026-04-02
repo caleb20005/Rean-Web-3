@@ -1,0 +1,22 @@
+.blob {
+    position: absolute;
+    filter: blur(40px);
+    opacity: 0.3;
+    z-index: 0;
+}
+.glass-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+.hero-pattern {
+    background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 2px, transparent 0);
+    background-size: 40px 40px;
+}
+.scrolled-nav {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+.competency-card:hover .competency-icon {
+    transform: scale(1.1) rotate(5deg);
+}

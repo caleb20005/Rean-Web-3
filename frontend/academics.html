@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academics - Rean Juniour Secondary school</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js"></script>
+</head>
+<body class="font-body text-gray-800 overflow-x-hidden bg-gray-50">
+
+    <nav id="navbar" class="w-full z-50 py-4 bg-white shadow-md">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-kenya-green rounded-full flex items-center justify-center text-2xl shadow-lg border-2 border-kenya-red">
+                    🎓
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-2xl text-gray-800 leading-none">Rean Juniour Secondary school</h1>
+                    <p class="text-sm text-kenya-green font-bold">CBC Centre of Excellence</p>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center gap-8">
+                <a href="home.html" class="font-bold text-gray-700 hover:text-kenya-green transition-colors">Home</a>
+                <div class="relative group">
+                    <button class="font-bold text-gray-700 hover:text-kenya-green transition-colors flex items-center gap-2">
+                        <span>Staff</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="absolute left-0 mt-3 w-52 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <a href="Admin.html" class="block px-4 py-3 font-semibold text-gray-700 hover:bg-blue-50 hover:text-kenya-green rounded-t-xl">Admin Dashboard</a>
+                        <a href="teacher-dashboard.html" class="block px-4 py-3 font-semibold text-gray-700 hover:bg-blue-50 hover:text-kenya-green">Teacher Dashboard</a>
+                        <a href="Headteacher.html" class="block px-4 py-3 font-semibold text-gray-700 hover:bg-blue-50 hover:text-kenya-green">Headteacher Dashboard</a>
+                        <a href="bursar-dashboard.html" class="block px-4 py-3 font-semibold text-gray-700 hover:bg-blue-50 hover:text-kenya-green">Bursar Dashboard</a>
+                        <span class="block px-4 py-3 font-semibold text-gray-700 rounded-b-xl cursor-default">Staff Directory</span>
+                    </div>
+                </div>
+                <div class="relative group">
+                    <button class="font-bold text-kenya-green flex items-center gap-2">
+                        <span>Academics</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="absolute left-0 mt-3 w-56 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <a href="academics.html" class="block px-4 py-3 font-semibold text-gray-700 hover:bg-blue-50 hover:text-kenya-green rounded-t-xl">Academics</a>
+                        <a href="parent-dashboard.html" class="block px-4 py-3 font-semibold text-gray-700 hover:bg-blue-50 hover:text-kenya-green rounded-b-xl">Parent Dashboard</a>
+                    </div>
+                </div>
+                <a href="contact.html" class="font-bold text-gray-700 hover:text-kenya-green transition-colors">Contact</a>
+            </div>
+
+            <button class="md:hidden text-2xl text-gray-800" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-white absolute w-full shadow-xl">
+            <div class="flex flex-col p-6 gap-4">
+                <a href="home.html" class="font-bold text-gray-700">Home</a>
+                <span class="font-bold text-gray-700 cursor-default">Staff</span>
+                <a href="Admin.html" class="font-semibold text-gray-700 pl-4">Admin Dashboard</a>
+                <a href="teacher-dashboard.html" class="font-semibold text-gray-700 pl-4">Teacher Dashboard</a>
+                <a href="Headteacher.html" class="font-semibold text-gray-700 pl-4">Headteacher Dashboard</a>
+                <a href="bursar-dashboard.html" class="font-semibold text-gray-700 pl-4">Bursar Dashboard</a>
+                <a href="academics.html" class="font-bold text-kenya-green">Academics</a>
+                <a href="parent-dashboard.html" class="font-bold text-gray-700">Parent Dashboard</a>
+                <a href="contact.html" class="font-bold text-gray-700">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="py-16 md:py-24 bg-kenya-green text-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white opacity-5 rounded-full -mr-48 -mt-48"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-kenya-red opacity-20 rounded-full -ml-32 -mb-32"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-5xl mx-auto bg-white/10 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/20">
+                <h1 class="text-4xl md:text-5xl font-display font-bold mb-4">Academics</h1>
+                <p class="text-lg text-gray-100">Discover our comprehensive academic programs designed to develop well-rounded students</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 md:py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-display font-bold text-center mb-12 text-gray-800">Our Academic Streams</h2>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Stream Card 1 -->
+                <div class="bg-gradient-to-br from-kenya-green/10 to-kenya-red/10 rounded-2xl p-8 border border-kenya-green/30 hover:shadow-lg transition-shadow">
+                    <div class="w-16 h-16 bg-kenya-green rounded-xl flex items-center justify-center text-white text-3xl mb-4">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Science Stream</h3>
+                    <p class="text-gray-600 mb-4">In-depth study of Physics, Chemistry, and Biology with practical laboratory experience.</p>
+                    <ul class="text-sm text-gray-700 space-y-2">
+                        <li><i class="fas fa-check text-kenya-green mr-2"></i>Advanced Labs</li>
+                        <li><i class="fas fa-check text-kenya-green mr-2"></i>Research Projects</li>
+                        <li><i class="fas fa-check text-kenya-green mr-2"></i>Expermental Design</li>
+                    </ul>
+                </div>
+
+                <!-- Stream Card 2 -->
+                <div class="bg-gradient-to-br from-kenya-red/10 to-yellow-100/50 rounded-2xl p-8 border border-kenya-red/30 hover:shadow-lg transition-shadow">
+                    <div class="w-16 h-16 bg-kenya-red rounded-xl flex items-center justify-center text-white text-3xl mb-4">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Mathematics & Computing</h3>
+                    <p class="text-gray-600 mb-4">Strong foundation in mathematics with emphasis on problem-solving and computational thinking.</p>
+                    <ul class="text-sm text-gray-700 space-y-2">
+                        <li><i class="fas fa-check text-kenya-red mr-2"></i>Programming</li>
+                        <li><i class="fas fa-check text-kenya-red mr-2"></i>Data Science</li>
+                        <li><i class="fas fa-check text-kenya-red mr-2"></i>Algorithms</li>
+                    </ul>
+                </div>
+
+                <!-- Stream Card 3 -->
+                <div class="bg-gradient-to-br from-blue-100/50 to-blue-100/50 rounded-2xl p-8 border border-blue-300/30 hover:shadow-lg transition-shadow">
+                    <div class="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center text-white text-3xl mb-4">
+                        <i class="fas fa-pen-fancy"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Humanities & Languages</h3>
+                    <p class="text-gray-600 mb-4">Explore history, literature, geography, and develop proficiency in multiple languages.</p>
+                    <ul class="text-sm text-gray-700 space-y-2">
+                        <li><i class="fas fa-check text-blue-600 mr-2"></i>Literature</li>
+                        <li><i class="fas fa-check text-blue-600 mr-2"></i>Languages</li>
+                        <li><i class="fas fa-check text-blue-600 mr-2"></i>Social Studies</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 md:py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-display font-bold text-center mb-12 text-gray-800">Curriculum Highlights</h2>
+
+            <div class="max-w-4xl mx-auto space-y-4">
+                <!-- Highlight 1 -->
+                <div class="bg-white rounded-lg p-6 border-l-4 border-kenya-green hover:shadow-md transition-shadow">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-kenya-green/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-graduation-cap text-kenya-green text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">Competency-Based Curriculum (CBC)</h3>
+                            <p class="text-gray-600">Aligned with the Kenya Competency-Based Curriculum framework to develop 21st-century skills.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Highlight 2 -->
+                <div class="bg-white rounded-lg p-6 border-l-4 border-kenya-red hover:shadow-md transition-shadow">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-kenya-red/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-globe text-kenya-red text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">International Exposure</h3>
+                            <p class="text-gray-600">Connections with international institutions and exchange programs for global perspective.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Highlight 3 -->
+                <div class="bg-white rounded-lg p-6 border-l-4 border-blue-600 hover:shadow-md transition-shadow">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-microscope text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">Hands-On Learning</h3>
+                            <p class="text-gray-600">Practical experiments, projects, and field studies to enhance theoretical knowledge.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Highlight 4 -->
+                <div class="bg-white rounded-lg p-6 border-l-4 border-blue-600 hover:shadow-md transition-shadow">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-users text-blue-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">Personalized Mentoring</h3>
+                            <p class="text-gray-600">One-on-one guidance from experienced teachers to support individual learning journeys.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="staff" class="py-16 md:py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-display font-bold text-center mb-12 text-gray-800">Academic Staff & Support Services</h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="flex items-start gap-4">
+                    <div class="w-14 h-14 bg-kenya-green text-white rounded-full flex items-center justify-center flex-shrink-0 text-2xl font-bold">1</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Tutoring Programs</h3>
+                        <p class="text-gray-600">Additional support in core subjects for students needing extra assistance or enrichment.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-14 h-14 bg-kenya-red text-white rounded-full flex items-center justify-center flex-shrink-0 text-2xl font-bold">2</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Career Guidance</h3>
+                        <p class="text-gray-600">Professional counseling to help students make informed decisions about their future paths.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 text-2xl font-bold">3</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Library Resources</h3>
+                        <p class="text-gray-600">Well-equipped library with digital resources, books, and research materials.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start gap-4">
+                    <div class="w-14 h-14 bg-blue-600 text-white rounded-full flex items-center justify-center flex-shrink-0 text-2xl font-bold">4</div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Technology Lab</h3>
+                        <p class="text-gray-600">Modern computer facilities and digital learning platforms for enhanced education.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 md:py-20 bg-kenya-green text-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white opacity-5 rounded-full -mr-48 -mt-48"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-kenya-red opacity-20 rounded-full -ml-32 -mb-32"></div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-display font-bold mb-6">Ready to Excel Academically?</h2>
+                <p class="text-lg text-gray-100 mb-8">Join Rean Juniour Secondary School and unlock your full academic potential with our world-class programs and dedicated educators.</p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="contact.html" class="bg-white text-kenya-green font-bold py-3 px-8 rounded-lg hover:bg-gray-100 transition-colors inline-block">Get in Touch</a>
+                    <a href="home.html" class="border-2 border-white text-white font-bold py-3 px-8 rounded-lg hover:bg-white/10 transition-colors inline-block">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="font-bold text-xl mb-4">Rean JSS</h3>
+                    <p class="text-gray-400">A centre of excellence dedicated to nurturing the leaders of tomorrow.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-xl mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="home.html" class="hover:text-white transition-colors">Home</a></li>
+                        <li><a href="academics.html" class="hover:text-white transition-colors">Academics</a></li>
+                        <li><a href="contact.html" class="hover:text-white transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-xl mb-4">Contact Info</h3>
+                    <p class="text-gray-400">📧 info@rean.edu.ke</p>
+                    <p class="text-gray-400">📱 +254 XXX XXX XXX</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-8">
+                <p class="text-center text-gray-400">&copy; 2026 Rean Juniour Secondary School. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Close mobile menu on link click
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+
+        // Sticky navbar on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('sticky', 'top-0');
+            } else {
+                navbar.classList.remove('sticky', 'top-0');
+            }
+        });
+    </script>
+</body>
+</html>
+

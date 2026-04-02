@@ -1,0 +1,38 @@
+# Node modules
+node_modules/
+package-lock.json
+npm-debug.log
+yarn-error.log
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+desktop.ini
+
+# Build and dist
+dist/
+build/
+*.log
+
+# Temporary files
+*.tmp
+temp/
+~*

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rean Primary & Junior Secondary School - Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'fredoka': ['Fredoka', 'sans-serif'],
+                        'nunito': ['Nunito', 'sans-serif'],
+                    },
+                    colors: {
+                        'school-blue': '#4FACFE',
+                        'school-purple': '#00F2FE',
+                        'school-yellow': '#FFD93D',
+                        'school-pink': '#FF6B6B',
+                        'school-green': '#6BCB77',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'wiggle': 'wiggle 1s ease-in-out infinite',
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        wiggle: {
+                            '0%, 100%': { transform: 'rotate(-3deg)' },
+                            '50%': { transform: 'rotate(3deg)' },
+                        },
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, .brand-font {
+            font-family: 'Fredoka', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        .input-group {
+            transition: all 0.3s ease;
+        }
+        .input-group:focus-within {
+            transform: translateY(-2px);
+        }
+        .input-group:focus-within i {
+            color: #4FACFE;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8; 
+        }
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #68D391;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #68D391;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center relative selection:bg-school-yellow selection:text-white">
+
+    <!-- Background Elements -->
+    <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+        <!-- Animated Blobs -->
+        <div class="absolute top-0 -left-4 w-72 h-72 bg-school-purple rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
+        <div class="absolute top-0 -right-4 w-72 h-72 bg-school-yellow rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div class="absolute -bottom-8 left-20 w-72 h-72 bg-school-pink rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        
+        <!-- Decorative Icons -->
+        <i class="fas fa-rocket text-6xl text-school-blue absolute top-20 left-20 opacity-20 animate-float"></i>
+        <i class="fas fa-star text-5xl text-school-yellow absolute bottom-32 right-20 opacity-20 animate-float-delayed"></i>
+        <i class="fas fa-book-open text-6xl text-school-pink absolute top-1/2 right-10 opacity-20 animate-float"></i>
+        <i class="fas fa-pencil-alt text-5xl text-school-green absolute bottom-20 left-1/4 opacity-20 animate-float-delayed"></i>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 z-10 relative flex flex-col lg:flex-row items-center justify-center gap-8 max-w-6xl h-full py-8">
+        
+        <!-- Left Side: Branding & Info -->
+        <div class="lg:w-1/2 text-center lg:text-left space-y-6 animate-fade-in-up">
+            <div class="inline-flex items-center justify-center lg:justify-start gap-3 mb-2">
+                <div class="w-16 h-16 bg-white rounded-2xl shadow-lg flex items-center justify-center text-3xl text-school-blue transform -rotate-6 hover:rotate-0 transition-transform duration-300">
+                    <i class="fas fa-school"></i>
+                </div>
+                    <h1 class="text-4xl lg:text-5xl font-bold text-slate-800 tracking-tight brand-font">
+                    Rean Primary & Junior Secondary School
+                </h1>
+            </div>
+            
+            <p class="text-lg text-slate-600 font-medium leading-relaxed max-w-lg mx-auto lg:mx-0">
+                Welcome to our digital learning hub! A safe and fun place for students, parents, and teachers at Rean Primary & Junior Secondary School to connect, learn, and grow together.
+            </p>
+
+            <div class="hidden lg:grid grid-cols-2 gap-4 mt-8">
+                <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-white/50 backdrop-blur-sm">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-500 flex items-center justify-center mb-2">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-700">Safe & Secure</h3>
+                    <p class="text-sm text-slate-500">COPPA compliant environment.</p>
+                </div>
+                <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-white/50 backdrop-blur-sm">
+                    <div class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center mb-2">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-700">Gamified Learning</h3>
+                    <p class="text-sm text-slate-500">Earn badges and points!</p>
+                </div>
+                <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-white/50 backdrop-blur-sm">
+                    <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-2">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-700">Parent Connect</h3>
+                    <p class="text-sm text-slate-500">Real-time progress updates.</p>
+                </div>
+                <div class="bg-white/60 p-4 rounded-xl shadow-sm border border-white/50 backdrop-blur-sm">
+                    <div class="w-10 h-10 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center mb-2">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-700">Creative Tools</h3>
+                    <p class="text-sm text-slate-500">Draw, write, and create.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Interactive Card -->
+        <div class="lg:w-1/2 w-full max-w-md perspective-1000">
+            <div id="card-container" class="relative w-full transition-all duration-500 transform-style-3d">
+                
+                <!-- LOGIN FORM -->
+                <div id="login-card" class="glass-panel w-full rounded-3xl shadow-2xl p-8 relative z-20">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-slate-800 brand-font">Welcome Back! 👋</h2>
+                        <p class="text-slate-500 text-sm mt-1">Enter your details to access your portal.</p>
+                    </div>
+
+                    <form id="login-form" class="space-y-5" onsubmit="handleLogin(event)">
+                        <!-- Role Selection -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 p-1 bg-slate-100 rounded-xl">
+                            <button type="button" onclick="selectRole('student')" class="role-btn active py-2 rounded-lg text-sm font-bold transition-all duration-200 bg-white text-school-blue shadow-sm" data-role="student">
+                                <i class="fas fa-user-graduate mr-1"></i> Student
+                            </button>
+                            <button type="button" onclick="selectRole('parent')" class="role-btn py-2 rounded-lg text-sm font-bold text-slate-500 hover:text-slate-700 transition-all duration-200" data-role="parent">
+                                <i class="fas fa-user-friends mr-1"></i> Parent
+                            </button>
+                            <button type="button" onclick="selectRole('teacher')" class="role-btn py-2 rounded-lg text-sm font-bold text-slate-500 hover:text-slate-700 transition-all duration-200" data-role="teacher">
+                                <i class="fas fa-chalkboard-teacher mr-1"></i> Teacher
+                            </button>
+                            <button type="button" onclick="selectRole('headteacher')" class="role-btn py-2 rounded-lg text-sm font-bold text-slate-500 hover:text-slate-700 transition-all duration-200" data-role="headteacher">
+                                <i class="fas fa-user-tie mr-1"></i> Headteacher
+                            </button>
+                        </div>
+                        <input type="hidden" id="role-input" value="student">
+
+                        <!-- Username -->
+                        <div class="input-group relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-slate-400 transition-colors"></i>
+                            </div>
+                            <input type="text" id="login-username" name="identifier" required 
+                                class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-school-blue/50 focus:border-school-blue transition-all"
+                                placeholder="Username or Email">
+                        </div>
+
+                        <!-- Password -->
+                        <div class="input-group relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-slate-400 transition-colors"></i>
+                            </div>
+                            <input type="password" id="login-password" name="password" required 
+                                class="w-full pl-11 pr-12 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-school-blue/50 focus:border-school-blue transition-all"
+                                placeholder="Password">
+                            <button type="button" onclick="togglePassword('login-password', this)" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-school-blue transition-colors">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+
+                        <!-- Remember & Forgot -->
+                        <div class="flex items-center justify-between text-sm">
+                            <label class="flex items-center cursor-pointer group">
+                                <input type="checkbox" class="w-4 h-4 rounded border-slate-300 text-school-blue focus:ring-school-blue transition-all">
+                                <span class="ml-2 text-slate-500 group-hover:text-slate-700">Remember me</span>
+                            </label>
+                            <a href="#" class="text-school-blue font-bold hover:underline">Forgot password?</a>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="login-btn" class="w-full bg-gradient-to-r from-school-blue to-school-purple text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2 group">
+                            <span>Sign In</span>
+                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </form>
+
+                    <div class="mt-8 text-center">
+                        <p class="text-slate-500 text-sm">
+                            New to Rean Primary & Junior Secondary School?
+                            <button onclick="flipCard()" class="text-school-pink font-bold hover:underline ml-1">Create Account</button>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SIGNUP FORM (Back of card logic handled via visibility/opacity for simplicity in single file without complex 3d bugs) -->
+                <div id="signup-card" class="hidden glass-panel w-full rounded-3xl shadow-2xl p-8 relative z-20">
+                    <button onclick="flipCard()" class="absolute top-6 left-6 text-slate-400 hover:text-slate-600 transition-colors">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </button>
+                    
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-bold text-slate-800 brand-font">Join the Fun! 🚀</h2>
+                        <p class="text-slate-500 text-sm mt-1">Start your learning adventure today.</p>
+                    </div>
+
+                    <form id="signup-form" class="space-y-4" onsubmit="handleSignup(event)">
+                        <!-- Name -->
+                        <div class="input-group relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-id-card text-slate-400"></i>
+                            </div>
+                            <input type="text" name="fullName" required 
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-school-pink/50 focus:border-school-pink transition-all"
+                                placeholder="Full Name">
+                        </div>
+
+                        <!-- Email -->
+                        <div class="input-group relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-slate-400"></i>
+                            </div>
+                            <input type="email" name="email" required 
+                                class="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-school-pink/50 focus:border-school-pink transition-all"
+                                placeholder="Parent Email">
+                        </div>
+
+                        <!-- Password -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="input-group relative">
+                                <input id="signup-password" name="password" type="password" required 
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-school-pink/50 focus:border-school-pink transition-all"
+                                    placeholder="Password">
+                                <button type="button" onclick="togglePassword('signup-password', this)" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-school-pink transition-colors">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="input-group relative">
+                                <input type="password" name="confirmPassword" required 
+                                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-school-pink/50 focus:border-school-pink transition-all"
+                                    placeholder="Confirm">
+                            </div>
+                        </div>
+
+                        <!-- Grade Selection -->
+                        <div class="relative">
+                            <select name="gradeLevel" class="w-full pl-4 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-600 focus:outline-none focus:ring-2 focus:ring-school-pink/50 focus:border-school-pink appearance-none cursor-pointer">
+                                <option value="" disabled selected>Select Grade Level</option>
+                                <option value="1">Grade 1</option>
+                                <option value="2">Grade 2</option>
+                                <option value="3">Grade 3</option>
+                                <option value="4">Grade 4</option>
+                                <option value="5">Grade 5</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-slate-500">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- Terms -->
+                        <label class="flex items-start cursor-pointer group">
+                            <input type="checkbox" required class="mt-1 w-4 h-4 rounded border-slate-300 text-school-pink focus:ring-school-pink transition-all">
+                            <span class="ml-2 text-xs text-slate-500 group-hover:text-slate-700 leading-tight">
+                                I agree to the <a href="#" class="text-school-blue underline">Terms of Service</a> and <a href="#" class="text-school-blue underline">Privacy Policy</a>.
+                            </span>
+                        </label>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="signup-btn" class="w-full bg-gradient-to-r from-school-pink to-orange-400 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2">
+                            <span>Create Account</span>
+                            <i class="fas fa-user-plus"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Success Overlay -->
+                <div id="success-overlay" class="hidden absolute inset-0 bg-white/95 backdrop-blur-xl rounded-3xl z-30 flex flex-col items-center justify-center text-center p-8 animate-fade-in">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-4xl text-green-500 mb-4 animate-bounce">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800 brand-font mb-2">Success!</h3>
+                    <p class="text-slate-600 mb-6">Redirecting you to the dashboard...</p>
+                    <div class="w-48 h-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-school-blue animate-[width_2s_ease-in-out_forwards]" style="width: 0%"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="fixed bottom-4 w-full text-center z-0">
+        <p class="text-slate-400 text-xs">&copy; 2023 Rean Primary & Junior Secondary School. All rights reserved.</p>
+    </div>
+
+    <!-- Canvas for Confetti -->
+    <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+    <script>
+        // --- UI Logic ---
+
+        function selectRole(role) {
+            // Update hidden input
+            document.getElementById('role-input').value = role;
+            
+            // Update buttons styling
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                if(btn.dataset.role === role) {
+                    btn.className = 'role-btn active py-2 rounded-lg text-sm font-bold transition-all duration-200 bg-white text-school-blue shadow-sm transform scale-105';
+                } else {
+                    btn.className = 'role-btn py-2 rounded-lg text-sm font-bold text-slate-500 hover:text-slate-700 transition-all duration-200 hover:bg-slate-200/50';
+                }
+            });
+
+            // Change placeholder based on role
+            const usernameInput = document.getElementById('login-username');
+            if(role === 'student') usernameInput.placeholder = "Student ID or Username";
+            else usernameInput.placeholder = "Registered Email";
+        }
+
+        function togglePassword(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+                icon.parentElement.classList.add('text-school-blue');
+            } else {
+                input.type = "password";
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+                icon.parentElement.classList.remove('text-school-blue');
+            }
+        }
+
+        function flipCard() {
+            const loginCard = document.getElementById('login-card');
+            const signupCard = document.getElementById('signup-card');
+            
+            if (signupCard.classList.contains('hidden')) {
+                // Switch to Signup
+                loginCard.classList.add('animate-fade-out');
+                setTimeout(() => {
+                    loginCard.classList.add('hidden');
+                    loginCard.classList.remove('animate-fade-out');
+                    
+                    signupCard.classList.remove('hidden');
+                    signupCard.classList.add('animate-fade-in');
+                }, 200);
+            } else {
+                // Switch to Login
+                signupCard.classList.add('animate-fade-out');
+                setTimeout(() => {
+                    signupCard.classList.add('hidden');
+                    signupCard.classList.remove('animate-fade-out');
+                    
+                    loginCard.classList.remove('hidden');
+                    loginCard.classList.add('animate-fade-in');
+                }, 200);
+            }
+        }
+
+        // --- Form Handling ---
+
+        const API_BASE = "http://localhost:5001/api";
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('login-btn');
+            const originalContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Signing In...';
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            const identifier = document.getElementById("login-username").value.trim();
+            const password = document.getElementById("login-password").value;
+            const role = document.getElementById("role-input").value;
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ identifier, password, role })
+                });
+                const text = await response.text();
+                const data = text ? JSON.parse(text) : {};
+                if (!response.ok) {
+                    throw new Error(data.message || "Invalid credentials");
+                }
+
+                showSuccess(() => {
+                    localStorage.setItem("reanLoggedIn", "true");
+                    localStorage.setItem("reanUserRole", data.user.role);
+                    window.location.href = "home.html";
+                });
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+                btn.classList.remove("opacity-75", "cursor-not-allowed");
+            }
+        }
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            const btn = document.getElementById('signup-btn');
+            const originalContent = btn.innerHTML;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Creating Account...';
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            const form = document.getElementById("signup-form");
+            const fullName = form.elements["fullName"].value.trim();
+            const email = form.elements["email"].value.trim();
+            const password = form.elements["password"].value;
+            const confirmPassword = form.elements["confirmPassword"].value;
+            const gradeLevel = form.elements["gradeLevel"].value;
+            const role = document.getElementById("role-input").value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+                btn.classList.remove("opacity-75", "cursor-not-allowed");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/signup`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        fullName,
+                        email,
+                        password,
+                        role,
+                        gradeLevel
+                    })
+                });
+                const text = await response.text();
+                const data = text ? JSON.parse(text) : {};
+                if (!response.ok) {
+                    throw new Error(data.message || "Could not create account");
+                }
+
+                showSuccess(() => {
+                    flipCard();
+                });
+                fireConfetti();
+            } catch (err) {
+                alert(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+                btn.classList.remove("opacity-75", "cursor-not-allowed");
+            }
+        }
+
+        function showSuccess(onComplete) {
+            const overlay = document.getElementById('success-overlay');
+            overlay.classList.remove('hidden');
+            
+            // Animate progress bar
+            const bar = overlay.querySelector('.bg-school-blue');
+            setTimeout(() => { bar.style.width = '100%'; }, 100);
+
+            // Reset after delay
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                bar.style.width = '0%';
+                if (typeof onComplete === 'function') {
+                    onComplete();
+                }
+                // In a real app, window.location.href = '/dashboard';
+            }, 2500);
+        }
+
+        // --- Confetti Effect (Simple Implementation) ---
+        function fireConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            const colors = ['#FFD93D', '#FF6B6B', '#4FACFE', '#6BCB77'];
+
+            for (let i = 0; i < 100; i++) {
+                particles.push({
+                    x: canvas.width / 2,
+                    y: canvas.height / 2,
+                    vx: (Math.random() - 0.5) * 10,
+                    vy: (Math.random() - 0.5) * 10 - 5,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 360,
+                    rotationSpeed: (Math.random() - 0.5) * 10
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let activeParticles = false;
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.2; // Gravity
+                    p.rotation += p.rotationSpeed;
+
+                    if (p.y < canvas.height) {
+                        activeParticles = true;
+                        ctx.save();
+                        ctx.translate(p.x, p.y);
+                        ctx.rotate(p.rotation * Math.PI / 180);
+                        ctx.fillStyle = p.color;
+                        ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                        ctx.restore();
+                    }
+                });
+
+                if (activeParticles) {
+                    requestAnimationFrame(animate);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            animate();
+        }
+
+        // Resize canvas on window resize
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('confetti-canvas');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+    </script>
+</body>
+</html>

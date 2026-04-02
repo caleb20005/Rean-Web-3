@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Headteacher Dashboard - Executive Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #f8fafc;
+        }
+        .serif { font-family: 'Nunito', sans-serif; }
+        
+        .sidebar-dark {
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+            border-color: #cbd5e1;
+        }
+        
+        .status-indicator {
+            position: relative;
+        }
+        .status-indicator::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        .status-online::after { background: #10b981; }
+        .status-busy::after { background: #f59e0b; }
+        .status-offline::after { background: #ef4444; }
+        
+        .trend-up { color: #10b981; }
+        .trend-down { color: #ef4444; }
+        
+        .priority-high { border-left: 4px solid #ef4444; }
+        .priority-medium { border-left: 4px solid #f59e0b; }
+        .priority-low { border-left: 4px solid #3b82f6; }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        .heatmap-cell {
+            transition: all 0.2s;
+        }
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body class="text-slate-800 overflow-hidden">
+
+    <div class="flex h-screen">
+        <!-- Executive Sidebar -->
+        <aside class="sidebar-dark w-80 text-slate-300 flex flex-col shadow-2xl relative z-20">
+            <div class="p-8 border-b border-slate-700/50">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-amber-400 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-crown text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-white serif tracking-tight">Luminary</h1>
+                        <p class="text-xs text-slate-400 uppercase tracking-widest">Executive Portal</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700">
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <img src="https://i.pravatar.cc/150?img=68" class="w-12 h-12 rounded-full border-2 border-amber-400/50" alt="Headteacher">
+                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-slate-800"></span>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-white text-sm">Dr. Eleanor Vance</p>
+                            <p class="text-xs text-slate-400">Headteacher</p>
+                            <p class="text-xs text-amber-400 mt-1">Executive Authority</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 px-4 space-y-1 overflow-y-auto custom-scrollbar">
+                <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 px-4">Executive Overview</div>
+                
+                <a href="#" class="flex items-center gap-4 px-4 py-3 bg-amber-500/10 text-amber-400 border-r-2 border-amber-400 rounded-l-xl transition-all">
+                    <i class="fas fa-chart-line w-5"></i>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-xl transition-all group">
+                    <i class="fas fa-sitemap w-5 group-hover:text-amber-400 transition-colors"></i>
+                    <span class="font-medium">School Structure</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-xl transition-all group">
+                    <i class="fas fa-users-cog w-5 group-hover:text-amber-400 transition-colors"></i>
+                    <span class="font-medium">Staff Management</span>
+                    <span class="ml-auto bg-slate-700 text-xs px-2 py-1 rounded-full">32</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-xl transition-all group">
+                    <i class="fas fa-graduation-cap w-5 group-hover:text-amber-400 transition-colors"></i>
+                    <span class="font-medium">Academic Performance</span>
+                </a>
+
+                <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-8 mb-3 px-4">Operations</div>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-xl transition-all group">
+                    <i class="fas fa-wallet w-5 group-hover:text-amber-400 transition-colors"></i>
+                    <span class="font-medium">Finance & Budget</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-xl transition-all group">
+                    <i class="fas fa-shield-alt w-5 group-hover:text-amber-400 transition-colors"></i>
+                    <span class="font-medium">Compliance & Safety</span>
+                    <span class="ml-auto bg-red-500/20 text-red-400 text-xs px-2 py-1 rounded-full">2</span>
+                </a>
+
+                <a href="Headteacher-registrations.html" class="flex items-center gap-4 px-4 py-3 hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-xl transition-all group" target="_blank">
+                    <i class="fas fa-address-book w-5 group-hover:text-amber-400 transition-colors"></i>
+                    <span class="font-medium">Registrations</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-xl transition-all group">
+                    <i class="fas fa-bullhorn w-5 group-hover:text-amber-400 transition-colors"></i>
+                    <span class="font-medium">Communications</span>
+                </a>
+
+                <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mt-8 mb-3 px-4">Strategic</div>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-xl transition-all group">
+                    <i class="fas fa-chess w-5 group-hover:text-amber-400 transition-colors"></i>
+                    <span class="font-medium">Strategic Planning</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 rounded-xl transition-all group">
+                    <i class="fas fa-chart-pie w-5 group-hover:text-amber-400 transition-colors"></i>
+                    <span class="font-medium">Reports & Analytics</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-700/50">
+                <button class="w-full py-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2 text-slate-300">
+                    <i class="fas fa-cog"></i>
+                    System Settings
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Executive Content -->
+        <main class="flex-1 overflow-y-auto custom-scrollbar bg-slate-50">
+            <!-- Executive Header -->
+            <header class="glass-panel sticky top-0 z-10 px-8 py-5 flex justify-between items-center border-b border-slate-200">
+                <div class="flex items-center gap-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800 serif">Executive Dashboard</h2>
+                        <p class="text-sm text-slate-500">Academic Year 2025-2026 • Term 2</p>
+                    </div>
+                    <div class="h-8 w-px bg-slate-300 hidden md:block"></div>
+                    <div class="hidden md:flex items-center gap-2 text-sm text-slate-600">
+                        <i class="far fa-calendar-alt text-amber-600"></i>
+                        <span class="font-medium" id="currentDate">Monday, March 9, 2026</span>
+                        <span class="text-slate-400">|</span>
+                        <span class="text-green-600 font-semibold flex items-center gap-1">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                            School Open
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="relative hidden lg:block">
+                        <input type="text" placeholder="Search across all school data..." 
+                               class="pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-full w-80 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent shadow-sm text-sm">
+                        <i class="fas fa-search absolute left-3.5 top-3 text-slate-400"></i>
+                    </div>
+
+                    <button class="relative p-2.5 text-slate-600 hover:text-amber-600 transition-colors bg-white rounded-full shadow-sm border border-slate-200">
+                        <i class="fas fa-bell text-lg"></i>
+                        <span class="absolute top-0 right-0 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center border-2 border-white font-bold">5</span>
+                    </button>
+
+                    <button class="relative p-2.5 text-slate-600 hover:text-amber-600 transition-colors bg-white rounded-full shadow-sm border border-slate-200">
+                        <i class="fas fa-envelope text-lg"></i>
+                        <span class="absolute top-0 right-0 w-5 h-5 bg-amber-500 text-white text-xs rounded-full flex items-center justify-center border-2 border-white font-bold">3</span>
+                    </button>
+
+                    <button class="hidden md:flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white px-4 py-2.5 rounded-full text-sm font-medium transition-colors shadow-lg">
+                        <i class="fas fa-plus"></i>
+                        New Action
+                    </button>
+                </div>
+            </header>
+
+            <div class="p-8 space-y-8">
+                <!-- Critical Alerts Banner -->
+                <div class="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-2xl p-5 flex items-center justify-between animate-fade-in">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-600">
+                            <i class="fas fa-exclamation-triangle text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-red-900">Action Required: Compliance Review</h3>
+                            <p class="text-sm text-red-700">Fire safety inspection overdue by 3 days • 2 staff certifications expiring this month</p>
+                        </div>
+                    </div>
+                    <button class="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-full text-sm font-medium transition-colors">
+                        Review Now
+                    </button>
+                </div>
+
+                <!-- Executive KPIs -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in">
+                    <div class="metric-card rounded-2xl p-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full -mr-16 -mt-16 opacity-60"></div>
+                        <div class="relative">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-3 bg-blue-100 rounded-xl text-blue-700">
+                                    <i class="fas fa-users text-xl"></i>
+                                </div>
+                                <div class="flex items-center gap-1 text-green-600 text-sm font-bold bg-green-50 px-2 py-1 rounded-full">
+                                    <i class="fas fa-arrow-up text-xs"></i>
+                                    <span>4.2%</span>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-slate-800 serif">486</h3>
+                            <p class="text-slate-500 text-sm font-medium">Total Enrollment</p>
+                            <div class="mt-4 flex items-center gap-2 text-xs text-slate-400">
+                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                <span>Capacity: 94%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card rounded-2xl p-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-full -mr-16 -mt-16 opacity-60"></div>
+                        <div class="relative">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-3 bg-amber-100 rounded-xl text-amber-700">
+                                    <i class="fas fa-percentage text-xl"></i>
+                                </div>
+                                <div class="flex items-center gap-1 text-green-600 text-sm font-bold bg-green-50 px-2 py-1 rounded-full">
+                                    <i class="fas fa-arrow-up text-xs"></i>
+                                    <span>1.8%</span>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-slate-800 serif">96.4%</h3>
+                            <p class="text-slate-500 text-sm font-medium">Attendance Rate</p>
+                            <div class="mt-4 w-full bg-slate-100 rounded-full h-2">
+                                <div class="bg-amber-500 h-2 rounded-full" style="width: 96%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card rounded-2xl p-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-purple-50 rounded-full -mr-16 -mt-16 opacity-60"></div>
+                        <div class="relative">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-3 bg-purple-100 rounded-xl text-purple-700">
+                                    <i class="fas fa-chart-line text-xl"></i>
+                                </div>
+                                <div class="flex items-center gap-1 text-green-600 text-sm font-bold bg-green-50 px-2 py-1 rounded-full">
+                                    <i class="fas fa-arrow-up text-xs"></i>
+                                    <span>5.3%</span>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-slate-800 serif">B+</h3>
+                            <p class="text-slate-500 text-sm font-medium">Average Grade</p>
+                            <div class="mt-4 flex gap-1">
+                                <div class="h-8 flex-1 bg-green-500 rounded-l-lg opacity-90"></div>
+                                <div class="h-8 flex-1 bg-blue-500 opacity-80"></div>
+                                <div class="h-8 flex-1 bg-amber-500 opacity-70"></div>
+                                <div class="h-8 flex-1 bg-orange-500 opacity-60 rounded-r-lg"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card rounded-2xl p-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-full -mr-16 -mt-16 opacity-60"></div>
+                        <div class="relative">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="p-3 bg-emerald-100 rounded-xl text-emerald-700">
+                                    <i class="fas fa-pound-sign text-xl"></i>
+                                </div>
+                                <div class="flex items-center gap-1 text-red-600 text-sm font-bold bg-red-50 px-2 py-1 rounded-full">
+                                    <i class="fas fa-arrow-down text-xs"></i>
+                                    <span>2.1%</span>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-slate-800 serif">KES 1.2M</h3>
+                            <p class="text-slate-500 text-sm font-medium">YTD Budget</p>
+                            <div class="mt-4 flex justify-between text-xs text-slate-500">
+                                <span>Spent: KES 892K</span>
+                                <span class="text-emerald-600 font-semibold">74%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategic Overview & Quick Actions -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
+                    <!-- Enrollment Trends -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800 serif">Enrollment & Performance Trends</h3>
+                                <p class="text-sm text-slate-500">5-year historical data with projections</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-medium transition-colors">1Y</button>
+                                <button class="px-3 py-1.5 bg-slate-800 text-white rounded-lg text-xs font-medium">5Y</button>
+                                <button class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-medium transition-colors">All</button>
+                            </div>
+                        </div>
+                        <canvas id="enrollmentChart" height="100"></canvas>
+                    </div>
+
+                    <!-- Executive Actions -->
+                    <div class="space-y-4">
+                        <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                            <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                                <i class="fas fa-bolt text-amber-500"></i>
+                                Priority Actions
+                            </h3>
+                            <div class="space-y-3">
+                                <button class="w-full flex items-center gap-3 p-3 rounded-xl bg-red-50 hover:bg-red-100 border border-red-100 transition-all group text-left">
+                                    <div class="w-10 h-10 rounded-lg bg-red-200 flex items-center justify-center text-red-700 flex-shrink-0">
+                                        <i class="fas fa-file-signature"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-semibold text-sm text-slate-800 truncate">Approve Budget Q3</p>
+                                        <p class="text-xs text-red-600">Due today</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-red-400"></i>
+                                </button>
+
+                                <button class="w-full flex items-center gap-3 p-3 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-100 transition-all group text-left">
+                                    <div class="w-10 h-10 rounded-lg bg-amber-200 flex items-center justify-center text-amber-700 flex-shrink-0">
+                                        <i class="fas fa-user-tie"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-semibold text-sm text-slate-800 truncate">Interview Candidates</p>
+                                        <p class="text-xs text-amber-600">3 pending</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-amber-400"></i>
+                                </button>
+
+                                <button class="w-full flex items-center gap-3 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-100 transition-all group text-left">
+                                    <div class="w-10 h-10 rounded-lg bg-blue-200 flex items-center justify-center text-blue-700 flex-shrink-0">
+                                        <i class="fas fa-clipboard-check"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="font-semibold text-sm text-slate-800 truncate">Ofsted Preparation</p>
+                                        <p class="text-xs text-blue-600">2 weeks left</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-blue-400"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 text-white shadow-lg">
+                            <h3 class="font-bold mb-3 flex items-center gap-2">
+                                <i class="fas fa-bullseye text-amber-400"></i>
+                                Strategic Goals
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-slate-300">Math Excellence Program</span>
+                                        <span class="text-amber-400 font-bold">78%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-700 rounded-full h-2">
+                                        <div class="bg-amber-400 h-2 rounded-full" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-slate-300">Digital Infrastructure</span>
+                                        <span class="text-amber-400 font-bold">65%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-700 rounded-full h-2">
+                                        <div class="bg-amber-400 h-2 rounded-full" style="width: 65%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-slate-300">Staff Development</span>
+                                        <span class="text-amber-400 font-bold">92%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-700 rounded-full h-2">
+                                        <div class="bg-amber-400 h-2 rounded-full" style="width: 92%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Department Performance & Staff Overview -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 animate-fade-in">
+                    <!-- Department Performance Heatmap -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800 serif">Department Performance Matrix</h3>
+                                <p class="text-sm text-slate-500">Key metrics by subject area</p>
+                            </div>
+                            <button class="text-slate-400 hover:text-slate-600">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <span class="w-24 text-sm font-medium text-slate-600">Mathematics</span>
+                                <div class="flex-1 grid grid-cols-4 gap-2">
+                                    <div class="heatmap-cell h-10 bg-green-500 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Achievement: 94%">94</div>
+                                    <div class="heatmap-cell h-10 bg-green-400 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Progress: 88%">88</div>
+                                    <div class="heatmap-cell h-10 bg-amber-400 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Attendance: 92%">92</div>
+                                    <div class="heatmap-cell h-10 bg-green-500 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Satisfaction: 96%">96</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="w-24 text-sm font-medium text-slate-600">Science</span>
+                                <div class="flex-1 grid grid-cols-4 gap-2">
+                                    <div class="heatmap-cell h-10 bg-green-400 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Achievement: 89%">89</div>
+                                    <div class="heatmap-cell h-10 bg-green-500 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Progress: 91%">91</div>
+                                    <div class="heatmap-cell h-10 bg-green-400 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Attendance: 90%">90</div>
+                                    <div class="heatmap-cell h-10 bg-amber-400 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Satisfaction: 87%">87</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="w-24 text-sm font-medium text-slate-600">English</span>
+                                <div class="flex-1 grid grid-cols-4 gap-2">
+                                    <div class="heatmap-cell h-10 bg-amber-400 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Achievement: 85%">85</div>
+                                    <div class="heatmap-cell h-10 bg-amber-400 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Progress: 84%">84</div>
+                                    <div class="heatmap-cell h-10 bg-red-400 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Attendance: 78%">78</div>
+                                    <div class="heatmap-cell h-10 bg-green-400 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Satisfaction: 89%">89</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <span class="w-24 text-sm font-medium text-slate-600">Arts</span>
+                                <div class="flex-1 grid grid-cols-4 gap-2">
+                                    <div class="heatmap-cell h-10 bg-green-500 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Achievement: 95%">95</div>
+                                    <div class="heatmap-cell h-10 bg-green-400 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Progress: 88%">88</div>
+                                    <div class="heatmap-cell h-10 bg-green-500 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Attendance: 94%">94</div>
+                                    <div class="heatmap-cell h-10 bg-green-500 rounded-lg flex items-center justify-center text-white text-xs font-bold cursor-pointer" title="Satisfaction: 98%">98</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-4">
+                            <div class="flex gap-4">
+                                <span class="flex items-center gap-1"><div class="w-3 h-3 bg-green-500 rounded"></div> Excellent (90-100)</span>
+                                <span class="flex items-center gap-1"><div class="w-3 h-3 bg-amber-400 rounded"></div> Good (80-89)</span>
+                                <span class="flex items-center gap-1"><div class="w-3 h-3 bg-red-400 rounded"></div> Needs Attention (&lt;80)</span>
+                            </div>
+                            <span>Metrics: Achievement | Progress | Attendance | Satisfaction</span>
+                        </div>
+                    </div>
+
+                    <!-- Staff Overview -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800 serif">Staff Overview</h3>
+                                <p class="text-sm text-slate-500">Current status and workload distribution</p>
+                            </div>
+                            <button class="text-amber-600 hover:text-amber-700 text-sm font-medium">View All Staff</button>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <div class="flex items-center gap-3">
+                                    <div class="relative">
+                                        <img src="https://i.pravatar.cc/100?img=5" class="w-12 h-12 rounded-full object-cover" alt="Teacher">
+                                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-800">Sarah Johnson</p>
+                                        <p class="text-xs text-slate-500">Head of Mathematics • 24 students</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="text-right">
+                                        <div class="flex items-center gap-1 text-amber-500 text-sm">
+                                            <i class="fas fa-star"></i>
+                                            <span class="font-bold">4.9</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400">Performance</p>
+                                    </div>
+                                    <div class="w-px h-8 bg-slate-200"></div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-bold text-slate-700">96%</p>
+                                        <p class="text-xs text-slate-400">Attendance</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <div class="flex items-center gap-3">
+                                    <div class="relative">
+                                        <img src="https://i.pravatar.cc/100?img=11" class="w-12 h-12 rounded-full object-cover" alt="Teacher">
+                                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-800">Michael Chen</p>
+                                        <p class="text-xs text-slate-500">Science Lead • 22 students</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="text-right">
+                                        <div class="flex items-center gap-1 text-amber-500 text-sm">
+                                            <i class="fas fa-star"></i>
+                                            <span class="font-bold">4.8</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400">Performance</p>
+                                    </div>
+                                    <div class="w-px h-8 bg-slate-200"></div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-bold text-slate-700">98%</p>
+                                        <p class="text-xs text-slate-400">Attendance</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 bg-red-50 rounded-xl border border-red-100">
+                                <div class="flex items-center gap-3">
+                                    <div class="relative">
+                                        <img src="https://i.pravatar.cc/100?img=9" class="w-12 h-12 rounded-full object-cover grayscale" alt="Teacher">
+                                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-800">Emily Rodriguez</p>
+                                        <p class="text-xs text-red-600 font-medium">On Leave • Art Department</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="bg-red-100 text-red-700 text-xs px-3 py-1 rounded-full font-medium">Mar 5-15</span>
+                                    <button class="text-slate-400 hover:text-slate-600">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 bg-amber-50 rounded-xl border border-amber-100">
+                                <div class="flex items-center gap-3">
+                                    <div class="relative">
+                                        <img src="https://i.pravatar.cc/100?img=16" class="w-12 h-12 rounded-full object-cover" alt="Teacher">
+                                        <span class="absolute bottom-0 right-0 w-3 h-3 bg-amber-500 rounded-full border-2 border-white"></span>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-slate-800">Lisa Thompson</p>
+                                        <p class="text-xs text-slate-500">English Teacher • 26 students</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div class="text-right">
+                                        <div class="flex items-center gap-1 text-amber-500 text-sm">
+                                            <i class="fas fa-star"></i>
+                                            <span class="font-bold">4.2</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400">Performance</p>
+                                    </div>
+                                    <div class="w-px h-8 bg-slate-200"></div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-bold text-amber-600">Review</p>
+                                        <p class="text-xs text-slate-400">Due</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Overview & Recent Incidents -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
+                    <!-- Budget Breakdown -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-slate-800 serif">Budget Allocation</h3>
+                            <button class="text-slate-400 hover:text-slate-600">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                        <canvas id="budgetChart" height="200"></canvas>
+                        <div class="mt-4 space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-600 flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                                    Staff Salaries
+                                </span>
+                                <span class="font-semibold text-slate-800">62%</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-600 flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                                    Operations
+                                </span>
+                                <span class="font-semibold text-slate-800">18%</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-600 flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                                    Resources
+                                </span>
+                                <span class="font-semibold text-slate-800">12%</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-600 flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-purple-500"></span>
+                                    Development
+                                </span>
+                                <span class="font-semibold text-slate-800">8%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Incidents -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800 serif">Recent Incidents & Reports</h3>
+                                <p class="text-sm text-slate-500">Requiring executive attention or review</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">All</button>
+                                <button class="px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 rounded-lg">Critical</button>
+                                <button class="px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">Resolved</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="priority-high bg-red-50 rounded-xl p-4 border border-red-100">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="bg-red-500 text-white text-xs px-2 py-1 rounded font-bold">HIGH</span>
+                                        <span class="text-xs text-slate-500">Today, 09:15 AM</span>
+                                    </div>
+                                    <button class="text-slate-400 hover:text-slate-600">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                                <h4 class="font-semibold text-slate-800 mb-1">Fire Safety Inspection Overdue</h4>
+                                <p class="text-sm text-slate-600 mb-3">Annual fire safety certification expired 3 days ago. Immediate action required to maintain compliance.</p>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs bg-white border border-red-200 text-red-700 px-3 py-1 rounded-full">Compliance</span>
+                                    <span class="text-xs bg-white border border-red-200 text-red-700 px-3 py-1 rounded-full">Safety</span>
+                                    <button class="ml-auto text-sm text-red-600 font-medium hover:text-red-700">Escalate</button>
+                                </div>
+                            </div>
+
+                            <div class="priority-medium bg-amber-50 rounded-xl p-4 border border-amber-100">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="bg-amber-500 text-white text-xs px-2 py-1 rounded font-bold">MED</span>
+                                        <span class="text-xs text-slate-500">Yesterday, 2:30 PM</span>
+                                    </div>
+                                    <button class="text-slate-400 hover:text-slate-600">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                                <h4 class="font-semibold text-slate-800 mb-1">Parent Complaint: Bullying Incident</h4>
+                                <p class="text-sm text-slate-600 mb-3">Formal complaint received regarding alleged bullying in Year 4. Investigation pending.</p>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs bg-white border border-amber-200 text-amber-700 px-3 py-1 rounded-full">Safeguarding</span>
+                                    <button class="ml-auto text-sm text-amber-600 font-medium hover:text-amber-700">Review Case</button>
+                                </div>
+                            </div>
+
+                            <div class="priority-low bg-blue-50 rounded-xl p-4 border border-blue-100">
+                                <div class="flex justify-between items-start mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="bg-blue-500 text-white text-xs px-2 py-1 rounded font-bold">LOW</span>
+                                        <span class="text-xs text-slate-500">Mar 7, 11:00 AM</span>
+                                    </div>
+                                    <button class="text-slate-400 hover:text-slate-600">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                                <h4 class="font-semibold text-slate-800 mb-1">IT Infrastructure Upgrade Request</h4>
+                                <p class="text-sm text-slate-600 mb-3">Proposal for classroom technology refresh submitted for budget review.</p>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs bg-white border border-blue-200 text-blue-700 px-3 py-1 rounded-full">IT</span>
+                                    <span class="text-xs bg-white border border-blue-200 text-blue-700 px-3 py-1 rounded-full">Budget</span>
+                                    <button class="ml-auto text-sm text-blue-600 font-medium hover:text-blue-700">View Proposal</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events & Calendar -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in">
+                    <!-- Calendar Preview -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-slate-800 serif">Executive Calendar</h3>
+                            <div class="flex gap-2">
+                                <button class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors">
+                                    <i class="fas fa-chevron-left text-sm"></i>
+                                </button>
+                                <button class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors">
+                                    <i class="fas fa-chevron-right text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center mb-6">
+                            <h4 class="text-2xl font-bold text-slate-800 serif">March 2026</h4>
+                        </div>
+
+                        <div class="grid grid-cols-7 gap-1 text-center text-sm mb-2">
+                            <span class="text-slate-400 font-medium">S</span>
+                            <span class="text-slate-400 font-medium">M</span>
+                            <span class="text-slate-400 font-medium">T</span>
+                            <span class="text-slate-400 font-medium">W</span>
+                            <span class="text-slate-400 font-medium">T</span>
+                            <span class="text-slate-400 font-medium">F</span>
+                            <span class="text-slate-400 font-medium">S</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-7 gap-1 text-center text-sm">
+                            <span class="p-2 text-slate-300">23</span>
+                            <span class="p-2 text-slate-300">24</span>
+                            <span class="p-2 text-slate-300">25</span>
+                            <span class="p-2 text-slate-300">26</span>
+                            <span class="p-2 text-slate-300">27</span>
+                            <span class="p-2 text-slate-300">28</span>
+                            <span class="p-2 text-slate-800">1</span>
+                            <span class="p-2 text-slate-800">2</span>
+                            <span class="p-2 text-slate-800">3</span>
+                            <span class="p-2 text-slate-800">4</span>
+                            <span class="p-2 text-slate-800">5</span>
+                            <span class="p-2 text-slate-800">6</span>
+                            <span class="p-2 text-slate-800">7</span>
+                            <span class="p-2 text-slate-800">8</span>
+                            <span class="p-2 bg-amber-500 text-white rounded-lg font-bold shadow-lg">9</span>
+                            <span class="p-2 text-slate-800">10</span>
+                            <span class="p-2 text-slate-800 relative">
+                                11
+                                <span class="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-red-500 rounded-full"></span>
+                            </span>
+                            <span class="p-2 text-slate-800 relative">
+                                12
+                                <span class="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-blue-500 rounded-full"></span>
+                            </span>
+                            <span class="p-2 text-slate-800">13</span>
+                            <span class="p-2 text-slate-800">14</span>
+                            <span class="p-2 text-slate-800">15</span>
+                        </div>
+
+                        <div class="mt-6 space-y-3">
+                            <div class="flex items-center gap-3 text-sm">
+                                <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                                <span class="text-slate-600">Critical Deadline</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm">
+                                <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                                <span class="text-slate-600">Meeting</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm">
+                                <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                                <span class="text-slate-600">Event</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Events -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg border border-slate-200 p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-bold text-slate-800 serif">Upcoming Executive Commitments</h3>
+                            <button class="text-amber-600 hover:text-amber-700 text-sm font-medium">Full Schedule</button>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="flex gap-4 p-4 bg-gradient-to-r from-red-50 to-white rounded-xl border-l-4 border-red-500">
+                                <div class="flex-shrink-0 w-16 text-center">
+                                    <p class="text-xs text-red-600 font-bold uppercase">Today</p>
+                                    <p class="text-2xl font-bold text-slate-800">9</p>
+                                    <p class="text-xs text-slate-500">2:00 PM</p>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h4 class="font-bold text-slate-800">Board of Governors Meeting</h4>
+                                            <p class="text-sm text-slate-600 mt-1">Quarterly strategic review and budget approval for Q3.</p>
+                                        </div>
+                                        <span class="bg-red-100 text-red-700 text-xs px-3 py-1 rounded-full font-medium">Critical</span>
+                                    </div>
+                                    <div class="flex items-center gap-4 mt-3 text-sm text-slate-500">
+                                        <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt"></i> Conference Room A</span>
+                                        <span class="flex items-center gap-1"><i class="fas fa-users"></i> 12 Attendees</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 p-4 bg-gradient-to-r from-blue-50 to-white rounded-xl border-l-4 border-blue-500">
+                                <div class="flex-shrink-0 w-16 text-center">
+                                    <p class="text-xs text-blue-600 font-bold uppercase">Mar</p>
+                                    <p class="text-2xl font-bold text-slate-800">11</p>
+                                    <p class="text-xs text-slate-500">9:00 AM</p>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h4 class="font-bold text-slate-800">Parent-Teacher Conference</h4>
+                                            <p class="text-sm text-slate-600 mt-1">Opening address and review of academic performance metrics.</p>
+                                        </div>
+                                        <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full font-medium">Event</span>
+                                    </div>
+                                    <div class="flex items-center gap-4 mt-3 text-sm text-slate-500">
+                                        <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt"></i> Main Hall</span>
+                                        <span class="flex items-center gap-1"><i class="fas fa-users"></i> 200+ Expected</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 p-4 bg-gradient-to-r from-amber-50 to-white rounded-xl border-l-4 border-amber-500">
+                                <div class="flex-shrink-0 w-16 text-center">
+                                    <p class="text-xs text-amber-600 font-bold uppercase">Mar</p>
+                                    <p class="text-2xl font-bold text-slate-800">12</p>
+                                    <p class="text-xs text-slate-500">10:00 AM</p>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h4 class="font-bold text-slate-800">Ofsted Preparation Review</h4>
+                                            <p class="text-sm text-slate-600 mt-1">Final checklist review with department heads before inspection.</p>
+                                        </div>
+                                        <span class="bg-amber-100 text-amber-700 text-xs px-3 py-1 rounded-full font-medium">Important</span>
+                                    </div>
+                                    <div class="flex items-center gap-4 mt-3 text-sm text-slate-500">
+                                        <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt"></i> Head's Office</span>
+                                        <span class="flex items-center gap-1"><i class="fas fa-clock"></i> 2 Hours</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 p-4 bg-gradient-to-r from-purple-50 to-white rounded-xl border-l-4 border-purple-500">
+                                <div class="flex-shrink-0 w-16 text-center">
+                                    <p class="text-xs text-purple-600 font-bold uppercase">Mar</p>
+                                    <p class="text-2xl font-bold text-slate-800">15</p>
+                                    <p class="text-xs text-slate-500">All Day</p>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h4 class="font-bold text-slate-800">Staff Professional Development Day</h4>
+                                            <p class="text-sm text-slate-600 mt-1">Whole-school training on new safeguarding protocols.</p>
+                                        </div>
+                                        <span class="bg-purple-100 text-purple-700 text-xs px-3 py-1 rounded-full font-medium">Training</span>
+                                    </div>
+                                    <div class="flex items-center gap-4 mt-3 text-sm text-slate-500">
+                                        <span class="flex items-center gap-1"><i class="fas fa-map-marker-alt"></i> Various Rooms</span>
+                                        <span class="flex items-center gap-1"><i class="fas fa-users"></i> All Staff</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Registrations Panel -->
+                <div class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 space-y-4 animate-fade-in">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-800 serif">Recent Registrations</h3>
+                            <p class="text-sm text-slate-500">Signed up users awaiting oversight</p>
+                        </div>
+                        <button onclick="loadRegistrations()" class="text-sm font-semibold text-amber-600 hover:text-amber-700 flex items-center gap-1">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div id="registration-table" class="overflow-x-auto">
+                        <table class="w-full text-sm text-left border-collapse">
+                            <thead class="text-xs uppercase text-slate-500 bg-slate-50">
+                                <tr>
+                                    <th class="px-3 py-2">Name</th>
+                                    <th class="px-3 py-2">Email</th>
+                                    <th class="px-3 py-2">Role</th>
+                                    <th class="px-3 py-2">Grade</th>
+                                    <th class="px-3 py-2">Registered</th>
+                                    <th class="px-3 py-2">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="registrations-body">
+                                <tr>
+                                    <td colspan="6" class="px-3 py-6 text-center text-slate-400">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Footer Stats -->
+                <div id="registrations" class="bg-white rounded-2xl shadow-lg border border-slate-200 p-6 space-y-4 animate-fade-in">
+                    <div class="text-center">
+                        <p class="text-3xl font-bold text-slate-800 serif">12</p>
+                        <p class="text-sm text-slate-500">Years Established</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-3xl font-bold text-slate-800 serif">1:12</p>
+                        <p class="text-sm text-slate-500">Staff-Student Ratio</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-3xl font-bold text-slate-800 serif">98%</p>
+                        <p class="text-sm text-slate-500">Parent Satisfaction</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-3xl font-bold text-slate-800 serif">Outstanding</p>
+                        <p class="text-sm text-slate-500">Last Ofsted Rating</p>
+                    </div>
+                </div>
+
+                <!-- Footer Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-6 border-t border-slate-200 animate-fade-in">
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Set current date
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', options);
+
+        // Enrollment Trends Chart
+        const enrollmentCtx = document.getElementById('enrollmentChart').getContext('2d');
+        new Chart(enrollmentCtx, {
+            type: 'line',
+            data: {
+                labels: ['2021', '2022', '2023', '2024', '2025', '2026'],
+                datasets: [{
+                    label: 'Enrollment',
+                    data: [420, 445, 462, 468, 478, 486],
+                    borderColor: '#0f172a',
+                    backgroundColor: 'rgba(15, 23, 42, 0.05)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#0f172a',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }, {
+                    label: 'National Average',
+                    data: [415, 430, 440, 445, 450, 455],
+                    borderColor: '#94a3b8',
+                    borderDash: [5, 5],
+                    tension: 0.4,
+                    pointRadius: 0,
+                    borderWidth: 2
+                }, {
+                    label: 'Capacity',
+                    data: [500, 500, 500, 500, 500, 500],
+                    borderColor: '#ef4444',
+                    borderDash: [2, 2],
+                    tension: 0,
+                    pointRadius: 0,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: { family: 'Nunito', size: 11 }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 400,
+                        max: 520,
+                        grid: { color: '#f1f5f9' },
+                        ticks: { font: { family: 'Nunito' } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: 'Nunito' } }
+                    }
+                }
+            }
+        });
+
+        // Budget Chart
+        const budgetCtx = document.getElementById('budgetChart').getContext('2d');
+        new Chart(budgetCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Staff Salaries', 'Operations', 'Resources', 'Development'],
+                datasets: [{
+                    data: [62, 18, 12, 8],
+                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+    <script>
+        const ADMIN_API_BASE = "http://localhost:5001/api/admin";
+        const registrationsBody = document.getElementById("registrations-body");
+
+        async function loadRegistrations() {
+            if (!registrationsBody) return;
+            registrationsBody.innerHTML = `<tr><td colspan="6" class="px-3 py-6 text-center text-slate-400">Loading...</td></tr>`;
+            try {
+                const res = await fetch(`${ADMIN_API_BASE}/users`, {
+                    headers: {
+                        'x-user-role': localStorage.getItem('reanUserRole') || ''
+                    }
+                });
+                const text = await res.text();
+                const data = text ? JSON.parse(text) : [];
+                if (!res.ok) throw new Error(data.message || "Unable to fetch registrations");
+                if (data.length === 0) {
+                    registrationsBody.innerHTML = `<tr><td colspan="6" class="px-3 py-6 text-center text-slate-400">No registrations yet</td></tr>`;
+                    return;
+                }
+                registrationsBody.innerHTML = data
+                    .map(user => `
+                        <tr class="border-t border-slate-100">
+                            <td class="px-3 py-2 font-semibold text-slate-800">${user.full_name}</td>
+                            <td class="px-3 py-2 text-slate-500">${user.email}</td>
+                            <td class="px-3 py-2 text-slate-500">${user.role}</td>
+                            <td class="px-3 py-2 text-slate-500">${user.grade_level || '-'}</td>
+                            <td class="px-3 py-2 text-slate-500">${new Date(user.created_at).toLocaleString()}</td>
+                            <td class="px-3 py-2">
+                                <button onclick="removeRegistration('${user.id}')" class="text-red-500 hover:text-red-600 text-xs font-semibold">Remove</button>
+                            </td>
+                        </tr>
+                    `)
+                    .join("");
+            } catch (error) {
+                registrationsBody.innerHTML = `<tr><td colspan="6" class="px-3 py-6 text-center text-red-500">Unable to load registrations</td></tr>`;
+                console.error("Failed to load registrations", error);
+            }
+        }
+
+        async function removeRegistration(id) {
+            if (!confirm("Remove this registration?")) return;
+            try {
+                const res = await fetch(`${ADMIN_API_BASE}/users/${id}`, {
+                    method: "DELETE",
+                    headers: {
+                        'x-user-role': localStorage.getItem('reanUserRole') || ''
+                    }
+                });
+                const text = await res.text();
+                const data = text ? JSON.parse(text) : {};
+                if (!res.ok) throw new Error(data.message || "Deletion failed");
+                loadRegistrations();
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+        loadRegistrations();
+    </script>
+</body>
+</html>

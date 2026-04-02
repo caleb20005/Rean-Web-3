@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rean P & JSS Student Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#f43f5e',
+                        dark: '#0f172a',
+                        surface: '#1e293b',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background: linear-gradient(135deg, #0b1f5c 0%, #1745a3 62%, #ffffff 100%); min-height: 100vh; }
+        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease; }
+        .glass-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.08); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); }
+        .nav-item.active { background: linear-gradient(90deg, rgba(99, 102, 241, 0.2) 0%, transparent 100%); border-left: 3px solid #6366f1; }
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #f43f5e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body class="text-gray-100 overflow-x-hidden">
+    <button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 p-3 glass-panel rounded-xl text-white" onclick="toggleSidebar()">
+        <i class="fas fa-bars text-xl"></i>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 w-72 glass-panel transform -translate-x-full lg:translate-x-0 transition-transform duration-300 z-40 flex flex-col">
+            <div class="p-6 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-bold text-xl">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold gradient-text">Rean P & JSS</h1>
+                        <p class="text-xs text-gray-400">Student Portal</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+                <button onclick="switchTab('dashboard')" class="nav-item active w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-gray-300 hover:text-white"><i class="fas fa-home w-5"></i><span>Dashboard</span></button>
+                <button onclick="switchTab('courses')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-gray-300 hover:text-white"><i class="fas fa-book w-5"></i><span>My Courses</span></button>
+                <button onclick="switchTab('schedule')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-gray-300 hover:text-white"><i class="fas fa-calendar-alt w-5"></i><span>Schedule</span></button>
+                <button onclick="switchTab('assignments')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-gray-300 hover:text-white"><i class="fas fa-tasks w-5"></i><span>Assignments</span></button>
+                <button onclick="switchTab('grades')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-gray-300 hover:text-white"><i class="fas fa-chart-line w-5"></i><span>Grades</span></button>
+                <button onclick="switchTab('messages')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-gray-300 hover:text-white"><i class="fas fa-envelope w-5"></i><span>Messages</span></button>
+                <button onclick="switchTab('profile')" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left text-gray-300 hover:text-white"><i class="fas fa-user w-5"></i><span>Profile</span></button>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-4 lg:p-8 overflow-y-auto">
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 id="page-title" class="text-3xl font-bold text-white mb-1">Dashboard</h2>
+                    <p class="text-gray-400">Welcome back, here's what's happening today</p>
+                </div>
+                <a href="parent-dashboard.html" class="glass-panel px-4 py-2 rounded-xl text-sm">Back to Parent Dashboard</a>
+            </header>
+
+            <div id="dashboard" class="tab-content active">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="glass-card rounded-2xl p-6"><h3 class="text-3xl font-bold">12</h3><p class="text-gray-400 text-sm">Active Courses</p></div>
+                    <div class="glass-card rounded-2xl p-6"><h3 class="text-3xl font-bold">48h</h3><p class="text-gray-400 text-sm">Study Time</p></div>
+                    <div class="glass-card rounded-2xl p-6"><h3 class="text-3xl font-bold">85%</h3><p class="text-gray-400 text-sm">Assignments Done</p></div>
+                    <div class="glass-card rounded-2xl p-6"><h3 class="text-3xl font-bold">3.8</h3><p class="text-gray-400 text-sm">Current GPA</p></div>
+                </div>
+            </div>
+
+            <div id="courses" class="tab-content"><div class="glass-panel rounded-2xl p-6"><h3 class="text-xl font-bold">My Courses</h3></div></div>
+            <div id="schedule" class="tab-content"><div class="glass-panel rounded-2xl p-6"><h3 class="text-xl font-bold">Schedule</h3></div></div>
+            <div id="assignments" class="tab-content"><div class="glass-panel rounded-2xl p-6"><h3 class="text-xl font-bold">Assignments</h3></div></div>
+            <div id="grades" class="tab-content"><div class="glass-panel rounded-2xl p-6"><h3 class="text-xl font-bold">Grades</h3></div></div>
+            <div id="messages" class="tab-content"><div class="glass-panel rounded-2xl p-6"><h3 class="text-xl font-bold">Messages</h3></div></div>
+            <div id="profile" class="tab-content"><div class="glass-panel rounded-2xl p-6"><h3 class="text-xl font-bold">Profile</h3></div></div>
+        </main>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            const tabIndex = ['dashboard', 'courses', 'schedule', 'assignments', 'grades', 'messages', 'profile'].indexOf(tabName);
+            const navItems = document.querySelectorAll('.nav-item');
+            if (tabIndex !== -1 && navItems[tabIndex]) navItems[tabIndex].classList.add('active');
+            const titles = {
+                dashboard: 'Dashboard',
+                courses: 'My Courses',
+                schedule: 'Schedule',
+                assignments: 'Assignments',
+                grades: 'Grades',
+                messages: 'Messages',
+                profile: 'Profile'
+            };
+            document.getElementById('page-title').textContent = titles[tabName];
+            if (window.innerWidth < 1024) document.getElementById('sidebar').classList.add('-translate-x-full');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        }
+
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth >= 1024) sidebar.classList.remove('-translate-x-full');
+            else sidebar.classList.add('-translate-x-full');
+        });
+    </script>
+</body>
+</html>

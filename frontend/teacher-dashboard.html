@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - Primary School Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+        .fun-font { font-family: 'Comic Neue', cursive; }
+        
+        .sidebar-gradient {
+            background: linear-gradient(180deg, #f59e0b 0%, #ea580c 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px) rotate(1deg);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .student-avatar {
+            transition: all 0.2s ease;
+        }
+        .student-avatar:hover {
+            transform: scale(1.2) rotate(5deg);
+            z-index: 10;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-bounce-slow {
+            animation: bounceSlow 2s infinite;
+        }
+        @keyframes bounceSlow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .sticker {
+            position: relative;
+            display: inline-block;
+        }
+        .sticker::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background: #fbbf24;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #fef3c7;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #f59e0b;
+            border-radius: 4px;
+        }
+        
+        .grade-a { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .grade-b { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+        .grade-c { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .grade-d { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        
+        .mood-happy { color: #10b981; }
+        .mood-neutral { color: #f59e0b; }
+        .mood-sad { color: #ef4444; }
+        
+        .attendance-present { background: #d1fae5; color: #065f46; }
+        .attendance-absent { background: #fee2e2; color: #991b1b; }
+        .attendance-late { background: #fef3c7; color: #92400e; }
+    </style>
+</head>
+<body class="bg-orange-50 text-gray-800 overflow-hidden">
+
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="sidebar-gradient w-72 text-white flex flex-col shadow-2xl relative z-20">
+            <div class="p-6 flex items-center gap-3 border-b border-white/20">
+                <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm animate-bounce-slow">
+                    <i class="fas fa-apple-alt text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight fun-font">ClassRoom</h1>
+                    <p class="text-xs text-white/80">Teacher Portal</p>
+                </div>
+            </div>
+
+            <div class="p-4">
+                <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/20">
+                    <div class="flex items-center gap-3">
+                        <img src="https://i.pravatar.cc/150?img=5" class="w-12 h-12 rounded-full border-2 border-white shadow-md" alt="Teacher">
+                        <div>
+                            <p class="font-bold text-sm">Ms. Sarah Johnson</p>
+                            <p class="text-xs text-white/70">Grade 3-A Teacher</p>
+                            <div class="flex items-center gap-1 mt-1">
+                                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                                <span class="text-xs">Online</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
+                <div class="text-xs font-bold text-white/60 uppercase tracking-wider mb-3 px-4">Teaching</div>
+                
+                <a href="#" class="flex items-center gap-4 px-4 py-3 bg-white/20 rounded-xl transition-all hover:translate-x-2 group">
+                    <i class="fas fa-home text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-white/10 rounded-xl transition-all hover:translate-x-2 group">
+                    <i class="fas fa-users text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">My Students</span>
+                    <span class="ml-auto bg-white/20 text-xs px-2 py-1 rounded-full font-bold">24</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-white/10 rounded-xl transition-all hover:translate-x-2 group">
+                    <i class="fas fa-clipboard-check text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Attendance</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-white/10 rounded-xl transition-all hover:translate-x-2 group">
+                    <i class="fas fa-star text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Grades</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-white/10 rounded-xl transition-all hover:translate-x-2 group">
+                    <i class="fas fa-book-open text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Lesson Plans</span>
+                </a>
+
+                <div class="text-xs font-bold text-white/60 uppercase tracking-wider mt-6 mb-3 px-4">Communication</div>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-white/10 rounded-xl transition-all hover:translate-x-2 group">
+                    <i class="fas fa-comments text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Messages</span>
+                    <span class="ml-auto bg-red-500 text-xs px-2 py-1 rounded-full font-bold animate-pulse">3</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-white/10 rounded-xl transition-all hover:translate-x-2 group">
+                    <i class="fas fa-bullhorn text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Announcements</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-white/10 rounded-xl transition-all hover:translate-x-2 group">
+                    <i class="fas fa-calendar-alt text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Schedule</span>
+                </a>
+
+                <div class="text-xs font-bold text-white/60 uppercase tracking-wider mt-6 mb-3 px-4">Resources</div>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-white/10 rounded-xl transition-all hover:translate-x-2 group">
+                    <i class="fas fa-folder-open text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Resources</span>
+                </a>
+
+                <a href="#" class="flex items-center gap-4 px-4 py-3 hover:bg-white/10 rounded-xl transition-all hover:translate-x-2 group">
+                    <i class="fas fa-cog text-lg group-hover:scale-110 transition-transform"></i>
+                    <span class="font-medium">Settings</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-white/20">
+                <a href="academics.html" class="w-full py-3 bg-white/20 hover:bg-white/30 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Log Out
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto custom-scrollbar bg-orange-50">
+            <!-- Header -->
+            <header class="bg-white sticky top-0 z-10 px-8 py-4 shadow-sm border-b border-orange-100 flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 fun-font">Good Morning, Ms. Johnson! 🌟</h2>
+                    <p class="text-sm text-gray-500">Here's your classroom overview for today</p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <div class="hidden md:flex items-center gap-3 bg-orange-100 px-4 py-2 rounded-full">
+                        <i class="far fa-calendar-alt text-orange-600"></i>
+                        <span class="text-sm font-medium text-orange-800" id="currentDate">Monday, March 9, 2026</span>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button class="w-10 h-10 rounded-full bg-gray-100 hover:bg-orange-100 flex items-center justify-center text-gray-600 hover:text-orange-600 transition-colors relative">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+                        </button>
+                        <button class="w-10 h-10 rounded-full bg-gray-100 hover:bg-orange-100 flex items-center justify-center text-gray-600 hover:text-orange-600 transition-colors">
+                            <i class="fas fa-question"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-8 space-y-8">
+                <!-- Quick Stats Row -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 animate-fade-in">
+                    <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-orange-100 card-hover relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-orange-100 rounded-full opacity-50"></div>
+                        <div class="relative">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="p-3 bg-orange-100 rounded-xl text-orange-600">
+                                    <i class="fas fa-users text-xl"></i>
+                                </div>
+                                <span class="text-green-500 text-xs font-bold bg-green-50 px-2 py-1 rounded-full">+2</span>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-800 fun-font">24</h3>
+                            <p class="text-gray-500 text-sm">Students Present</p>
+                            <div class="mt-3 flex -space-x-2">
+                                <img src="https://i.pravatar.cc/100?img=33" class="w-8 h-8 rounded-full border-2 border-white student-avatar" alt="Student">
+                                <img src="https://i.pravatar.cc/100?img=34" class="w-8 h-8 rounded-full border-2 border-white student-avatar" alt="Student">
+                                <img src="https://i.pravatar.cc/100?img=35" class="w-8 h-8 rounded-full border-2 border-white student-avatar" alt="Student">
+                                <div class="w-8 h-8 rounded-full border-2 border-white bg-orange-200 flex items-center justify-center text-xs font-bold text-orange-700 student-avatar">+21</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-blue-100 card-hover relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-100 rounded-full opacity-50"></div>
+                        <div class="relative">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="p-3 bg-blue-100 rounded-xl text-blue-600">
+                                    <i class="fas fa-clipboard-check text-xl"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-800 fun-font">2</h3>
+                            <p class="text-gray-500 text-sm">Absent Today</p>
+                            <div class="mt-3 flex items-center gap-2 text-sm text-red-500">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>1 unexcused</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-green-100 card-hover relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-green-100 rounded-full opacity-50"></div>
+                        <div class="relative">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="p-3 bg-green-100 rounded-xl text-green-600">
+                                    <i class="fas fa-star text-xl"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-800 fun-font">12</h3>
+                            <p class="text-gray-500 text-sm">Assignments Due</p>
+                            <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 75%"></div>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">75% submitted</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 shadow-lg border-2 border-purple-100 card-hover relative overflow-hidden">
+                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-purple-100 rounded-full opacity-50"></div>
+                        <div class="relative">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="p-3 bg-purple-100 rounded-xl text-purple-600">
+                                    <i class="fas fa-trophy text-xl"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-3xl font-bold text-gray-800 fun-font">8</h3>
+                            <p class="text-gray-500 text-sm">Top Performers</p>
+                            <div class="mt-3 flex gap-1">
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <i class="fas fa-star text-yellow-400 text-sm"></i>
+                                <i class="fas fa-star-half-alt text-yellow-400 text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Today's Schedule & Quick Actions -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in">
+                    <!-- Schedule -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl shadow-lg border border-orange-100 overflow-hidden">
+                        <div class="p-6 border-b border-orange-50 flex justify-between items-center bg-gradient-to-r from-orange-50 to-white">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-800">Today's Schedule</h3>
+                                    <p class="text-sm text-gray-500">Room 101 • Grade 3-A</p>
+                                </div>
+                            </div>
+                            <button class="text-orange-600 hover:text-orange-800 text-sm font-medium">Full Schedule</button>
+                        </div>
+                        
+                        <div class="p-6 space-y-4">
+                            <!-- Current Class -->
+                            <div class="flex gap-4 items-center p-4 bg-green-50 rounded-xl border-2 border-green-200 relative overflow-hidden">
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-green-500"></div>
+                                <div class="flex-shrink-0 w-16 text-center">
+                                    <p class="text-xs text-gray-500">NOW</p>
+                                    <p class="font-bold text-gray-800">9:00</p>
+                                    <p class="text-xs text-gray-400">10:00</p>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <h4 class="font-bold text-gray-800">Mathematics</h4>
+                                        <span class="bg-green-500 text-white text-xs px-2 py-0.5 rounded-full animate-pulse">LIVE</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600">Chapter 5: Multiplication Tables</p>
+                                    <div class="flex gap-2 mt-2">
+                                        <span class="text-xs bg-white px-2 py-1 rounded border border-green-200 text-green-700">
+                                            <i class="fas fa-book mr-1"></i>Textbook p.45
+                                        </span>
+                                        <span class="text-xs bg-white px-2 py-1 rounded border border-green-200 text-green-700">
+                                            <i class="fas fa-tasks mr-1"></i>Quiz Tomorrow
+                                        </span>
+                                    </div>
+                                </div>
+                                <button class="w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-green-600 hover:bg-green-100 transition-colors">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            </div>
+
+                            <!-- Upcoming Classes -->
+                            <div class="flex gap-4 items-center p-4 bg-gray-50 rounded-xl border border-gray-200 opacity-75">
+                                <div class="flex-shrink-0 w-16 text-center">
+                                    <p class="font-bold text-gray-800">10:15</p>
+                                    <p class="text-xs text-gray-400">11:00</p>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-gray-800">Science</h4>
+                                    <p class="text-sm text-gray-600">Plant Life Cycle - Bring samples!</p>
+                                </div>
+                                <span class="text-xs text-gray-400">45 min</span>
+                            </div>
+
+                            <div class="flex gap-4 items-center p-4 bg-gray-50 rounded-xl border border-gray-200 opacity-75">
+                                <div class="flex-shrink-0 w-16 text-center">
+                                    <p class="font-bold text-gray-800">11:15</p>
+                                    <p class="text-xs text-gray-400">12:00</p>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-gray-800">English Language</h4>
+                                    <p class="text-sm text-gray-600">Reading Comprehension: The Magic Tree</p>
+                                </div>
+                                <span class="text-xs text-gray-400">45 min</span>
+                            </div>
+
+                            <!-- Break -->
+                            <div class="flex gap-4 items-center p-3 bg-orange-50 rounded-xl border border-orange-200 justify-center">
+                                <i class="fas fa-utensils text-orange-400"></i>
+                                <span class="font-medium text-orange-700">Lunch Break 12:00 - 1:00 PM</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="space-y-4">
+                        <div class="bg-white rounded-2xl p-6 shadow-lg border border-orange-100">
+                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i class="fas fa-bolt text-yellow-500"></i>
+                                Quick Actions
+                            </h3>
+                            <div class="space-y-3">
+                                <button class="w-full flex items-center gap-3 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 transition-all hover:translate-x-1 group">
+                                    <div class="w-10 h-10 rounded-lg bg-blue-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-clipboard-list"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="font-semibold text-sm">Take Attendance</p>
+                                        <p class="text-xs text-blue-600/70">Mark today's presence</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right ml-auto text-blue-400"></i>
+                                </button>
+
+                                <button class="w-full flex items-center gap-3 p-3 rounded-xl bg-green-50 hover:bg-green-100 text-green-700 transition-all hover:translate-x-1 group">
+                                    <div class="w-10 h-10 rounded-lg bg-green-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-plus-circle"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="font-semibold text-sm">Add Grade</p>
+                                        <p class="text-xs text-green-600/70">Record new scores</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right ml-auto text-green-400"></i>
+                                </button>
+
+                                <button class="w-full flex items-center gap-3 p-3 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 transition-all hover:translate-x-1 group">
+                                    <div class="w-10 h-10 rounded-lg bg-purple-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="font-semibold text-sm">Create Assignment</p>
+                                        <p class="text-xs text-purple-600/70">Post new homework</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right ml-auto text-purple-400"></i>
+                                </button>
+
+                                <button class="w-full flex items-center gap-3 p-3 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-700 transition-all hover:translate-x-1 group">
+                                    <div class="w-10 h-10 rounded-lg bg-orange-200 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-envelope"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <p class="font-semibold text-sm">Message Parents</p>
+                                        <p class="text-xs text-orange-600/70">Send updates</p>
+                                    </div>
+                                    <i class="fas fa-chevron-right ml-auto text-orange-400"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Class Mood -->
+                        <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl p-6 text-white shadow-lg">
+                            <h3 class="font-bold mb-3 flex items-center gap-2">
+                                <i class="fas fa-smile"></i>
+                                Class Mood Today
+                            </h3>
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="text-center">
+                                    <i class="fas fa-laugh-beam text-3xl mb-1"></i>
+                                    <p class="text-xs font-medium">18</p>
+                                </div>
+                                <div class="text-center opacity-75">
+                                    <i class="fas fa-meh text-3xl mb-1"></i>
+                                    <p class="text-xs font-medium">4</p>
+                                </div>
+                                <div class="text-center opacity-50">
+                                    <i class="fas fa-frown text-3xl mb-1"></i>
+                                    <p class="text-xs font-medium">2</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-white/90 text-center">Most students are happy and engaged! 🎉</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student Performance & Attendance -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in">
+                    <!-- Recent Grades -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-orange-100 overflow-hidden">
+                        <div class="p-6 border-b border-orange-50 flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">Recent Assessments</h3>
+                                <p class="text-sm text-gray-500">Last 7 days grade entries</p>
+                            </div>
+                            <button class="text-orange-600 hover:text-orange-800 text-sm font-medium">View All</button>
+                        </div>
+                        
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://i.pravatar.cc/100?img=33" class="w-10 h-10 rounded-full" alt="Student">
+                                        <div>
+                                            <p class="font-semibold text-sm text-gray-800">Emma Wilson</p>
+                                            <p class="text-xs text-gray-500">Math Quiz • Mar 8</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="grade-a text-white text-sm font-bold px-3 py-1 rounded-full">A</span>
+                                        <span class="text-sm font-bold text-gray-700">95%</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://i.pravatar.cc/100?img=34" class="w-10 h-10 rounded-full" alt="Student">
+                                        <div>
+                                            <p class="font-semibold text-sm text-gray-800">Lucas Martinez</p>
+                                            <p class="text-xs text-gray-500">Science Project • Mar 7</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="grade-b text-white text-sm font-bold px-3 py-1 rounded-full">B+</span>
+                                        <span class="text-sm font-bold text-gray-700">88%</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://i.pravatar.cc/100?img=35" class="w-10 h-10 rounded-full" alt="Student">
+                                        <div>
+                                            <p class="font-semibold text-sm text-gray-800">Sophia Chen</p>
+                                            <p class="text-xs text-gray-500">English Essay • Mar 6</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="grade-a text-white text-sm font-bold px-3 py-1 rounded-full">A+</span>
+                                        <span class="text-sm font-bold text-gray-700">98%</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl border-2 border-red-100">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://i.pravatar.cc/100?img=36" class="w-10 h-10 rounded-full" alt="Student">
+                                        <div>
+                                            <p class="font-semibold text-sm text-gray-800">James Brown</p>
+                                            <p class="text-xs text-gray-500">Math Quiz • Mar 8</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="grade-d text-white text-sm font-bold px-3 py-1 rounded-full">D</span>
+                                        <span class="text-sm font-bold text-gray-700">65%</span>
+                                        <button class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full hover:bg-red-200 transition-colors">
+                                            <i class="fas fa-exclamation-triangle mr-1"></i>Alert
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Tracker -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-orange-100 overflow-hidden">
+                        <div class="p-6 border-b border-orange-50 flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">Today's Attendance</h3>
+                                <p class="text-sm text-gray-500">March 9, 2026 • Period 1</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium hover:bg-green-200 transition-colors">
+                                    <i class="fas fa-check mr-1"></i>Mark All Present
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="p-6">
+                            <div class="grid grid-cols-6 gap-3 mb-4">
+                                <div class="text-center">
+                                    <div class="w-full aspect-square rounded-xl attendance-present flex items-center justify-center text-2xl font-bold mb-1">P</div>
+                                    <p class="text-xs text-gray-600">18</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-full aspect-square rounded-xl attendance-absent flex items-center justify-center text-2xl font-bold mb-1">A</div>
+                                    <p class="text-xs text-gray-600">2</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-full aspect-square rounded-xl attendance-late flex items-center justify-center text-2xl font-bold mb-1">L</div>
+                                    <p class="text-xs text-gray-600">1</p>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-full aspect-square rounded-xl bg-gray-100 text-gray-400 flex items-center justify-center text-2xl font-bold mb-1">E</div>
+                                    <p class="text-xs text-gray-600">3</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2 max-h-64 overflow-y-auto custom-scrollbar pr-2">
+                                <div class="flex items-center justify-between p-3 hover:bg-orange-50 rounded-xl transition-colors group">
+                                    <div class="flex items-center gap-3">
+                                        <div class="relative">
+                                            <img src="https://i.pravatar.cc/100?img=33" class="w-10 h-10 rounded-full" alt="Student">
+                                            <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></span>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-sm text-gray-800">Emma Wilson</p>
+                                            <p class="text-xs text-gray-500">#2024001</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center hover:bg-green-200"><i class="fas fa-check text-xs"></i></button>
+                                        <button class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-200"><i class="fas fa-times text-xs"></i></button>
+                                        <button class="w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center hover:bg-yellow-200"><i class="fas fa-clock text-xs"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 hover:bg-orange-50 rounded-xl transition-colors group">
+                                    <div class="flex items-center gap-3">
+                                        <div class="relative">
+                                            <img src="https://i.pravatar.cc/100?img=34" class="w-10 h-10 rounded-full" alt="Student">
+                                            <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></span>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-sm text-gray-800">Lucas Martinez</p>
+                                            <p class="text-xs text-gray-500">#2024002</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <button class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center hover:bg-green-200"><i class="fas fa-check text-xs"></i></button>
+                                        <button class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center hover:bg-red-200"><i class="fas fa-times text-xs"></i></button>
+                                        <button class="w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center hover:bg-yellow-200"><i class="fas fa-clock text-xs"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-100">
+                                    <div class="flex items-center gap-3">
+                                        <div class="relative">
+                                            <img src="https://i.pravatar.cc/100?img=40" class="w-10 h-10 rounded-full grayscale" alt="Student">
+                                            <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></span>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-sm text-gray-800">Oliver Smith</p>
+                                            <p class="text-xs text-red-500">Absent • No note</p>
+                                        </div>
+                                    </div>
+                                    <button class="text-xs bg-white border border-red-200 text-red-600 px-3 py-1 rounded-full hover:bg-red-50">
+                                        Contact Parent
+                                    </button>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-xl border border-yellow-100">
+                                    <div class="flex items-center gap-3">
+                                        <div class="relative">
+                                            <img src="https://i.pravatar.cc/100?img=38" class="w-10 h-10 rounded-full" alt="Student">
+                                            <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full border-2 border-white"></span>
+                                        </div>
+                                        <div>
+                                            <p class="font-semibold text-sm text-gray-800">Ava Johnson</p>
+                                            <p class="text-xs text-yellow-600">Late • 15 min</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-yellow-700 bg-yellow-100 px-2 py-1 rounded-full">Excused</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Section: Student Spotlight & Resources -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in">
+                    <!-- Student of the Week -->
+                    <div class="bg-gradient-to-br from-yellow-300 to-orange-400 rounded-2xl p-6 shadow-lg text-white relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full -mr-10 -mt-10"></div>
+                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/20 rounded-full -ml-10 -mb-10"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="flex items-center gap-2 mb-4">
+                                <i class="fas fa-crown text-2xl text-yellow-200 animate-bounce-slow"></i>
+                                <h3 class="font-bold text-lg">Star Student</h3>
+                            </div>
+                            
+                            <div class="flex items-center gap-4 mb-4">
+                                <img src="https://i.pravatar.cc/150?img=35" class="w-20 h-20 rounded-2xl border-4 border-white/50 shadow-lg" alt="Star Student">
+                                <div>
+                                    <h4 class="font-bold text-xl fun-font">Sophia Chen</h4>
+                                    <p class="text-white/90 text-sm">Grade 3-A</p>
+                                    <div class="flex gap-1 mt-1">
+                                        <i class="fas fa-star text-yellow-200"></i>
+                                        <i class="fas fa-star text-yellow-200"></i>
+                                        <i class="fas fa-star text-yellow-200"></i>
+                                        <i class="fas fa-star text-yellow-200"></i>
+                                        <i class="fas fa-star text-yellow-200"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-white/20 rounded-xl p-3 backdrop-blur-sm">
+                                <p class="text-sm text-white/95 italic">"Excellent participation in class discussions and helped peers with math problems!"</p>
+                            </div>
+                            
+                            <div class="mt-4 flex gap-2">
+                                <button class="flex-1 bg-white text-orange-600 py-2 rounded-xl font-bold text-sm hover:bg-orange-50 transition-colors">
+                                    View Profile
+                                </button>
+                                <button class="flex-1 bg-orange-600 text-white py-2 rounded-xl font-bold text-sm hover:bg-orange-700 transition-colors border border-white/30">
+                                    Send Reward
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Performance Chart -->
+                    <div class="bg-white rounded-2xl p-6 shadow-lg border border-orange-100">
+                        <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-chart-line text-blue-500"></i>
+                            Class Average Progress
+                        </h3>
+                        <canvas id="progressChart" height="180"></canvas>
+                    </div>
+
+                    <!-- Quick Resources -->
+                    <div class="bg-white rounded-2xl p-6 shadow-lg border border-orange-100">
+                        <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-folder-open text-purple-500"></i>
+                            Quick Resources
+                        </h3>
+                        <div class="space-y-3">
+                            <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-red-50 hover:bg-red-100 transition-colors group">
+                                <div class="w-10 h-10 rounded-lg bg-red-200 flex items-center justify-center text-red-600 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-file-pdf"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-semibold text-sm text-gray-800">Math Worksheets</p>
+                                    <p class="text-xs text-gray-500">Chapter 5 - Multiplication</p>
+                                </div>
+                                <i class="fas fa-download text-gray-400"></i>
+                            </a>
+
+                            <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition-colors group">
+                                <div class="w-10 h-10 rounded-lg bg-blue-200 flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-semibold text-sm text-gray-800">Science Video</p>
+                                    <p class="text-xs text-gray-500">Plant Life Cycle (12 min)</p>
+                                </div>
+                                <i class="fas fa-play text-gray-400"></i>
+                            </a>
+
+                            <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-green-50 hover:bg-green-100 transition-colors group">
+                                <div class="w-10 h-10 rounded-lg bg-green-200 flex items-center justify-center text-green-600 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-clipboard"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-semibold text-sm text-gray-800">Quiz Template</p>
+                                    <p class="text-xs text-gray-500">Editable Google Form</p>
+                                </div>
+                                <i class="fas fa-external-link-alt text-gray-400"></i>
+                            </a>
+
+                            <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-purple-50 hover:bg-purple-100 transition-colors group">
+                                <div class="w-10 h-10 rounded-lg bg-purple-200 flex items-center justify-center text-purple-600 group-hover:scale-110 transition-transform">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="font-semibold text-sm text-gray-800">Reading List</p>
+                                    <p class="text-xs text-gray-500">Grade 3 Recommended</p>
+                                </div>
+                                <i class="fas fa-chevron-right text-gray-400"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Parent Messages Preview -->
+                <div class="bg-white rounded-2xl shadow-lg border border-orange-100 overflow-hidden animate-fade-in">
+                    <div class="p-6 border-b border-orange-50 flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">Recent Parent Messages</h3>
+                                <p class="text-sm text-gray-500">3 unread messages</p>
+                            </div>
+                        </div>
+                        <button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                            View All Messages
+                        </button>
+                    </div>
+                    
+                    <div class="divide-y divide-gray-100">
+                        <div class="p-6 hover:bg-orange-50 transition-colors cursor-pointer flex gap-4">
+                            <div class="relative">
+                                <img src="https://i.pravatar.cc/100?img=12" class="w-12 h-12 rounded-full" alt="Parent">
+                                <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">1</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="font-bold text-gray-800">Mrs. Wilson (Emma's Mom)</h4>
+                                    <span class="text-xs text-gray-500">2 hours ago</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">Hi Ms. Johnson, Emma mentioned she's struggling with the new multiplication method. Could we schedule a quick meeting?</p>
+                                <div class="flex gap-2">
+                                    <button class="text-xs bg-orange-100 text-orange-700 px-3 py-1 rounded-full hover:bg-orange-200 transition-colors">Reply</button>
+                                    <button class="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded-full hover:bg-gray-200 transition-colors">Schedule Meeting</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-6 hover:bg-orange-50 transition-colors cursor-pointer flex gap-4">
+                            <div class="relative">
+                                <img src="https://i.pravatar.cc/100?img=15" class="w-12 h-12 rounded-full" alt="Parent">
+                                <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">2</span>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="font-bold text-gray-800">Mr. Martinez (Lucas's Dad)</h4>
+                                    <span class="text-xs text-gray-500">5 hours ago</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">Thank you for the update on Lucas's science project! He worked really hard on it.</p>
+                                <div class="flex gap-2">
+                                    <button class="text-xs bg-orange-100 text-orange-700 px-3 py-1 rounded-full hover:bg-orange-200 transition-colors">Reply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Set current date
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', options);
+
+        // Progress Chart
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'],
+                datasets: [{
+                    label: 'Class Average',
+                    data: [72, 75, 78, 76, 82, 85],
+                    borderColor: '#f97316',
+                    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#f97316',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4
+                }, {
+                    label: 'Target',
+                    data: [80, 80, 80, 80, 80, 80],
+                    borderColor: '#10b981',
+                    borderDash: [5, 5],
+                    tension: 0,
+                    pointRadius: 0,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 15,
+                            font: { family: 'Outfit', size: 11 }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 60,
+                        max: 100,
+                        grid: { color: '#f3f4f6' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Simulate live attendance updates
+        setInterval(() => {
+            const presentCount = document.querySelector('.fa-users').closest('.bg-white').querySelector('h3');
+            if (presentCount && Math.random() > 0.8) {
+                const current = parseInt(presentCount.textContent);
+                if (Math.random() > 0.5 && current < 24) {
+                    presentCount.textContent = current + 1;
+                    // Add animation effect
+                    presentCount.style.transform = 'scale(1.2)';
+                    setTimeout(() => presentCount.style.transform = 'scale(1)', 200);
+                }
+            }
+        }, 10000);
+    </script>
+</body>
+</html>
