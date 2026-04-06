@@ -3,16 +3,22 @@ const cors = require("cors");
 const routes = require("./routes");
 const notFound = require("./middleware/notFound");
 const errorHandler = require("./middleware/errorHandler");
-const { corsOrigin } = require("./config/env");
 
 const app = express();
 
+// Allow everything - CORS, methods, headers
 app.use(
   cors({
-    origin: corsOrigin === "*" ? true : corsOrigin
+    origin: true, // Allow all origins
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["*"],
+    credentials: true
   })
 );
 app.use(express.json());
+
+// Allow preflight requests
+app.options('*', cors());
 
 app.use("/api", routes);
 

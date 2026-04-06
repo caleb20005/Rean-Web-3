@@ -23,7 +23,9 @@
         }
         
         function canAccessStaffMenu() {
-            return getUserRole().toLowerCase() === ADMIN_ROLE;
+            // TEMPORARILY DISABLED: Admin check - allow all users
+            // return getUserRole().toLowerCase() === ADMIN_ROLE;
+            return true; // Allow all authenticated users
         }
         
         function initializeNavigation() {

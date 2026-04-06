@@ -18,18 +18,20 @@
 <body class="font-body text-gray-800 overflow-x-hidden bg-gray-50">
 
     <script>
-        // Only admin role can access this portal
+        // Allow all authenticated users to access this portal
         const ADMIN_ROLE = 'admin';
-        const userRole = (localStorage.getItem('reanUserRole') || '').toLowerCase();
+        const userRole = (localStorage.getItem('reanUserRole') || 'user').toLowerCase();
         const isAuthenticated = localStorage.getItem('reanLoggedIn') === 'true';
 
         // Security check: redirect unauthorized users
         if (!isAuthenticated) {
             window.location.replace('login.html');
-        } else if (userRole !== ADMIN_ROLE) {
-            alert('Access denied. Admin privileges required.');
-            window.location.replace('home.html');
         }
+        // TEMPORARILY DISABLED: Admin role check
+        // else if (userRole !== ADMIN_ROLE) {
+        //     alert('Access denied. Admin privileges required.');
+        //     window.location.replace('home.html');
+        // }
 
         // Additional security: check if user data is valid
         if (!userRole || userRole === '') {
@@ -38,13 +40,14 @@
         }
 
         function setStaffMenuState() {
-            // Only show staff menu to admin users
+            // Show staff menu to all authenticated users
             document.querySelectorAll('.staff-menu-item').forEach(item => {
-                if (userRole === ADMIN_ROLE) {
+                // TEMPORARILY DISABLED: Admin check
+                // if (userRole === ADMIN_ROLE) {
                     item.classList.remove('hidden');
-                } else {
-                    item.classList.add('hidden');
-                }
+                // } else {
+                //     item.classList.add('hidden');
+                // }
             });
         }
 

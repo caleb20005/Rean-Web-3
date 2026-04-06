@@ -2,6 +2,8 @@ const app = require("./app");
 const { port, nodeEnv } = require("./config/env");
 const ensureSchema = require("./config/schema");
 
+console.log(`Attempting to start server on port: ${port}`);
+
 ensureSchema()
   .then(() => {
     app.listen(port, () => {

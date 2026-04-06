@@ -1,6 +1,8 @@
 const dotenv = require("dotenv");
+const path = require("path");
 
-dotenv.config();
+// Load .env from the backend directory
+dotenv.config({ path: path.join(__dirname, '../../.env') });
 
 module.exports = {
   port: Number(process.env.PORT) || 5001,
