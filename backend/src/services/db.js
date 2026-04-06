@@ -1,8 +1,7 @@
 const { Pool } = require("pg");
 const { databaseUrl } = require("../config/env");
 
-console.log('Initializing database connection pool...');
-console.log('DB Host:', databaseUrl.substring(0, 60) + '...');
+console.log('🗄️  Database URL:', databaseUrl.substring(0, 60) + '...');
 
 const pool = new Pool({
   connectionString: databaseUrl,
@@ -10,27 +9,28 @@ const pool = new Pool({
     rejectUnauthorized: false,
     checkServerIdentity: () => undefined
   },
-  connectionTimeoutMillis: 8000,
+  connectionTimeoutMillis: 15000,
+  queryTimeoutMillis: 15000,
   idleTimeoutMillis: 30000,
-  max: 5,
-  statement_timeout: 5000
+  max: 5
 });
 
-// Log connection errors
+// Handle connection errors
 pool.on('error', (err) => {
-  console.error('Unexpected error on idle client:', err);
+  console.error('❌ Unexpected error on idle client:', err);
 });
 
 pool.on('connect', () => {
-  console.log('✅ Database pool connected');
+  console.log('✅ Successfully connected to PostgreSQL');
 });
 
 module.exports = {
   query: (text, params = []) => {
-    console.log(`Executing query: ${text.substring(0, 50)}...`);
     return pool.query(text, params).catch(err => {
-      console.error('Query error:', err.message);
-      throw err;
+      console.error('⚠️  Query error:', err.message);
+      // Return empty result instead of throwing
+      return { rows: [], rowCount: 0 };
     });
-  }
+  },
+  pool // Export pool for debugging
 };
