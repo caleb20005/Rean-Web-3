@@ -519,7 +519,7 @@
             const bar = overlay.querySelector('.bg-school-blue');
             setTimeout(() => { bar.style.width = '100%'; }, 100);
 
-            // Reset after delay
+            // Reset after delay (reduced from 2500ms to 1000ms)
             setTimeout(() => {
                 overlay.classList.add('hidden');
                 bar.style.width = '0%';
@@ -527,7 +527,7 @@
                     onComplete();
                 }
                 // In a real app, window.location.href = '/dashboard';
-            }, 2500);
+            }, 1000);
         }
 
         // --- Confetti Effect (Simple Implementation) ---
